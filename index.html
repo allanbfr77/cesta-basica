@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cesta Básica · INVB</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ── TOKENS ─────────────────────────────────────────── */
+    :root {
+      --green-deep:   #1a4731;
+      --green-mid:    #2d6a4f;
+      --green-light:  #52b788;
+      --green-pale:   #d8f3dc;
+      --amber:        #f4a261;
+      --amber-deep:   #e76f51;
+      --cream:        #fdfaf4;
+      --ink:          #1c1c1e;
+      --muted:        #6b7280;
+      --border:       rgba(45,106,79,.15);
+      --radius-sm:    10px;
+      --radius-md:    18px;
+      --radius-lg:    28px;
+      --shadow-card:  0 4px 24px rgba(26,71,49,.10);
+      --shadow-float: 0 16px 48px rgba(26,71,49,.18);
+      --transition:   .25s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* ── RESET ──────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── BACKGROUND TEXTURE ─────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 0%, rgba(82,183,136,.12) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 90% 100%, rgba(244,162,97,.10) 0%, transparent 55%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── LAYOUT ─────────────────────────────────────────── */
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 32px 16px 80px;
+    }
+
+    /* ── HEADER ─────────────────────────────────────────── */
+    .header {
+      text-align: center;
+      padding: 16px 0 32px;
+    }
+
+    .header__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--green-deep);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 100px;
+      margin-bottom: 18px;
+    }
+
+    .header__badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--green-light);
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: .5; transform: scale(.8); }
+    }
+
+    .header__title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(32px, 8vw, 48px);
+      font-weight: 900;
+      line-height: 1.05;
+      color: var(--green-deep);
+      letter-spacing: -.02em;
+    }
+
+    .header__title span {
+      display: block;
+      color: var(--amber-deep);
+    }
+
+    .header__verse {
+      margin-top: 14px;
+      font-size: 13px;
+      color: var(--muted);
+      font-style: italic;
+      line-height: 1.6;
+      max-width: 320px;
+      margin-inline: auto;
+    }
+
+    /* ── PROGRESS CARD ──────────────────────────────────── */
+    .progress-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px 24px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-card);
+      animation: slideUp .5s ease both;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .progress-card__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 12px;
+    }
+
+    .progress-card__label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .progress-card__pct {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--green-deep);
+      line-height: 1;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 10px;
+      background: var(--green-pale);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--green-mid), var(--green-light));
+      border-radius: 100px;
+      transition: width 1.2s cubic-bezier(.4,0,.2,1);
+    }
+
+    .progress-card__caption {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* ── FORM CARD ──────────────────────────────────────── */
+    .form-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px;
+      box-shadow: var(--shadow-card);
+      animation: slideUp .5s .1s ease both;
+    }
+
+    .form-card__title {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--green-deep);
+      margin-bottom: 22px;
+    }
+
+    /* ── FIELD ──────────────────────────────────────────── */
+    .field {
+      margin-bottom: 18px;
+    }
+
+    .field__label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 7px;
+      letter-spacing: .01em;
+    }
+
+    .field__input,
+    .field__select {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1.5px solid #e5e7eb;
+      border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      color: var(--ink);
+      background: #fafafa;
+      transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .field__input:focus,
+    .field__select:focus {
+      outline: none;
+      border-color: var(--green-light);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(82,183,136,.15);
+    }
+
+    .field__select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 42px;
+      cursor: pointer;
+    }
+
+    .field__select:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    /* ── ITEM BADGE (restante) ──────────────────────────── */
+    .field__hint {
+      display: block;
+      margin-top: 5px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .badge-available {
+      display: inline-block;
+      background: var(--green-pale);
+      color: var(--green-deep);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 100px;
+    }
+
+    /* ── DIVIDER ────────────────────────────────────────── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 22px 0;
+    }
+
+    /* ── SUBMIT BUTTON ──────────────────────────────────── */
+    .btn-submit {
+      width: 100%;
+      padding: 16px;
+      background: var(--green-deep);
+      color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: .04em;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+    }
+
+    .btn-submit::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,.08), transparent);
+    }
+
+    .btn-submit:hover:not(:disabled) {
+      background: var(--green-mid);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(26,71,49,.25);
+    }
+
+    .btn-submit:active:not(:disabled) {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+
+    .btn-submit:disabled {
+      background: #d1d5db;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-submit__inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    /* spinner */
+    .spinner {
+      display: none;
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .btn-submit.loading .spinner { display: block; }
+    .btn-submit.loading .btn-label { opacity: .7; }
+
+    /* ── NOTICE ─────────────────────────────────────────── */
+    .notice {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      font-size: 13px;
+      color: #92400e;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .notice__icon { flex-shrink: 0; font-size: 16px; margin-top: 1px; }
+
+    /* ── MODAL OVERLAY ──────────────────────────────────── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9000;
+      background: rgba(0,0,0,.45);
+      backdrop-filter: blur(4px);
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-overlay.is-open {
+      display: flex;
+      animation: fadeIn .2s ease;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .modal-box {
+      background: #fff;
+      border-radius: var(--radius-lg);
+      padding: 32px 28px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      box-shadow: var(--shadow-float);
+      animation: scaleIn .25s cubic-bezier(.34,1.56,.64,1);
+    }
+
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(.88); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-box__icon {
+      font-size: 48px;
+      margin-bottom: 14px;
+      display: block;
+    }
+
+    .modal-box__title {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--green-deep);
+      margin-bottom: 10px;
+    }
+
+    .modal-box__title--error { color: var(--amber-deep); }
+
+    .modal-box__msg {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .btn-modal {
+      padding: 13px 32px;
+      border: none;
+      border-radius: var(--radius-md);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background var(--transition), transform var(--transition);
+    }
+
+    .btn-modal--success {
+      background: var(--green-deep);
+      color: #fff;
+    }
+
+    .btn-modal--success:hover { background: var(--green-mid); }
+
+    .btn-modal--error {
+      background: #fee2e2;
+      color: var(--amber-deep);
+    }
+
+    .btn-modal--error:hover { background: #fecaca; }
+
+    /* ── LOADING STATE ──────────────────────────────────── */
+    .skeleton {
+      display: block;
+      height: 48px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+    }
+
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* ── MAX QTD HINT ───────────────────────────────────── */
+    #maxHint {
+      margin-top: 5px;
+      font-size: 12px;
+      color: var(--muted);
+      min-height: 16px;
+    }
+
+    /* ── FOOTER ─────────────────────────────────────────── */
+    .footer {
+      text-align: center;
+      margin-top: 32px;
+      font-size: 11px;
+      color: #c4c9d4;
+      letter-spacing: .04em;
+    }
+
+    /* ── ERROR INLINE ───────────────────────────────────── */
+    .field__error {
+      display: none;
+      margin-top: 5px;
+      font-size: 12px;
+      color: var(--amber-deep);
+      font-weight: 500;
+    }
+
+    .field__error.visible { display: block; }
+  </style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header__badge">Arrecadação em andamento</div>
+    <h1 class="header__title">
+      Cesta Básica
+      <span>INVB</span>
+    </h1>
+    <p class="header__verse">
+      "Enquanto tivermos oportunidade, façamos o bem a todos,<br>
+      principalmente aos da família da fé." — Gl 6:10
+    </p>
+  </header>
+
+  <!-- PROGRESSO -->
+  <div class="progress-card" id="progressCard">
+    <div class="progress-card__header">
+      <span class="progress-card__label">Progresso geral</span>
+      <span class="progress-card__pct" id="pctLabel">—</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <p class="progress-card__caption" id="progressCaption">Carregando dados…</p>
+  </div>
+
+  <!-- FORMULÁRIO -->
+  <div class="form-card">
+    <h2 class="form-card__title">Registrar doação</h2>
+
+    <div class="notice">
+      <span class="notice__icon">💡</span>
+      <span>Para doar mais de um item, basta repetir o processo após confirmar cada doação.</span>
+    </div>
+
+    <form id="donationForm" novalidate>
+
+      <!-- Nome -->
+      <div class="field">
+        <label class="field__label" for="nome">Seu nome</label>
+        <input
+          class="field__input"
+          type="text"
+          id="nome"
+          name="nome"
+          placeholder="Ex: Maria Silva"
+          autocomplete="name"
+          required
+        />
+        <span class="field__error" id="erroNome">Por favor, informe seu nome.</span>
+      </div>
+
+      <!-- Item -->
+      <div class="field">
+        <label class="field__label" for="item">Item para doação</label>
+        <div id="itemSkeleton" class="skeleton"></div>
+        <select class="field__select" id="item" name="item" required style="display:none">
+          <option value="">Selecione um item…</option>
+        </select>
+        <span class="field__error" id="erroItem">Selecione um item da lista.</span>
+      </div>
+
+      <!-- Quantidade -->
+      <div class="field">
+        <label class="field__label" for="quantidade">Quantidade</label>
+        <input
+          class="field__input"
+          type="number"
+          id="quantidade"
+          name="quantidade"
+          min="1"
+          placeholder="1"
+          required
+        />
+        <span id="maxHint"></span>
+        <span class="field__error" id="erroQtd">Informe uma quantidade válida.</span>
+      </div>
+
+      <div class="divider"></div>
+
+      <button type="submit" class="btn-submit" id="btnEnviar">
+        <span class="btn-submit__inner">
+          <span class="spinner"></span>
+          <span class="btn-label">Confirmar doação</span>
+        </span>
+      </button>
+
+    </form>
+  </div>
+
+  <footer class="footer">v1.0.0 · INVB · Cesta Básica</footer>
+</div>
+
+<!-- MODAL SUCESSO -->
+<div class="modal-overlay" id="successModal" role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <span class="modal-box__icon">🙏</span>
+    <h3 class="modal-box__title">Doação registrada!</h3>
+    <p class="modal-box__msg" id="successMsg"></p>
+    <button class="btn-modal btn-modal--success" id="btnSuccessClose">Fechar</button>
+  </div>
+</div>
+
+<!-- MODAL ERRO -->
+<div class="modal-overlay" id="errorModal" role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <span class="modal-box__icon">⚠️</span>
+    <h3 class="modal-box__title modal-box__title--error">Algo deu errado</h3>
+    <p class="modal-box__msg" id="errorMsg"></p>
+    <button class="btn-modal btn-modal--error" id="btnErrorClose">Tentar novamente</button>
+  </div>
+</div>
+
+<script>
+  /* ─── CONFIG ──────────────────────────────────────── */
+  // 👉 Substitua pela URL do seu Web App publicado no Apps Script
+  const API_URL = 'https://script.google.com/macros/s/AKfycbz_6cLHnLTtGAVTW_m8j7NGfyOdeGLGR1YkkIBjEaMSOKp1H_S-0bZJTFK4gBA9ct73/exec';
+
+  /* ─── ESTADO ──────────────────────────────────────── */
+  let itemsCache = [];
+
+  /* ─── UTILITÁRIOS ─────────────────────────────────── */
+  function beep() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = 880;
+      gain.gain.setValueAtTime(.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(.001, ctx.currentTime + .3);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + .3);
+    } catch {}
+  }
+
+  function setLoading(active) {
+    const btn = document.getElementById('btnEnviar');
+    if (active) {
+      btn.classList.add('loading');
+      btn.disabled = true;
+      btn.querySelector('.btn-label').textContent = 'Enviando…';
+    } else {
+      btn.classList.remove('loading');
+      btn.disabled = false;
+      btn.querySelector('.btn-label').textContent = 'Confirmar doação';
+    }
+  }
+
+  function openModal(id) {
+    document.getElementById(id).classList.add('is-open');
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('is-open');
+  }
+
+  /* ─── CARREGA ITENS ───────────────────────────────── */
+  async function carregarItens() {
+    const skeleton = document.getElementById('itemSkeleton');
+    const select   = document.getElementById('item');
+    skeleton.style.display = 'block';
+    select.style.display   = 'none';
+
+    try {
+      const res  = await fetch(`${API_URL}?action=items`);
+      const data = await res.json();
+      itemsCache = data.items || [];
+
+      select.innerHTML = '<option value="">Selecione um item…</option>';
+      itemsCache.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item.nome;
+        opt.textContent = `${item.nome}`;
+        opt.dataset.restante = item.restante;
+        select.appendChild(opt);
+      });
+
+      skeleton.style.display = 'none';
+      select.style.display   = 'block';
+    } catch {
+      skeleton.style.display = 'none';
+      select.style.display   = 'block';
+      select.innerHTML = '<option value="">Erro ao carregar itens</option>';
+    }
+  }
+
+  /* ─── CARREGA PROGRESSO ───────────────────────────── */
+  async function carregarProgresso() {
+    try {
+      const res  = await fetch(`${API_URL}?action=progress`);
+      const data = await res.json();
+      const pct  = data.percent ?? 0;
+
+      document.getElementById('pctLabel').textContent    = `${pct}%`;
+      document.getElementById('progressFill').style.width = `${pct}%`;
+      document.getElementById('progressCaption').textContent =
+        pct === 100
+          ? '🎉 Meta atingida! Obrigado a todos!'
+          : `${pct}% dos alimentos já foram garantidos`;
+    } catch {
+      document.getElementById('progressCaption').textContent = 'Não foi possível carregar o progresso.';
+    }
+  }
+
+  /* ─── ATUALIZA HINT DE QUANTIDADE ────────────────── */
+  document.getElementById('item').addEventListener('change', function () {
+    const hint = document.getElementById('maxHint');
+    const qtd  = document.getElementById('quantidade');
+    const selected = this.options[this.selectedIndex];
+    const restante = selected?.dataset?.restante;
+
+    if (restante) {
+      hint.innerHTML = `<span class="badge-available">${restante} unidades disponíveis</span>`;
+      qtd.max = restante;
+    } else {
+      hint.textContent = '';
+      qtd.removeAttribute('max');
+    }
+  });
+
+  /* ─── SUBMIT ──────────────────────────────────────── */
+  document.getElementById('donationForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    // Limpa erros
+    document.querySelectorAll('.field__error').forEach(el => el.classList.remove('visible'));
+
+    const nome      = document.getElementById('nome').value.trim();
+    const item      = document.getElementById('item').value;
+    const quantidade = parseInt(document.getElementById('quantidade').value, 10);
+
+    // Validação inline
+    let valid = true;
+    if (!nome) {
+      document.getElementById('erroNome').classList.add('visible');
+      valid = false;
+    }
+    if (!item) {
+      document.getElementById('erroItem').classList.add('visible');
+      valid = false;
+    }
+    if (!quantidade || quantidade < 1) {
+      document.getElementById('erroQtd').classList.add('visible');
+      valid = false;
+    }
+    if (!valid) return;
+
+    // Valida contra cache
+    const produto = itemsCache.find(i => i.nome === item);
+    if (!produto) {
+      document.getElementById('erroItem').textContent = 'Item inválido. Recarregue a página.';
+      document.getElementById('erroItem').classList.add('visible');
+      return;
+    }
+    if (quantidade > produto.restante) {
+      document.getElementById('erroQtd').textContent = `Máximo disponível: ${produto.restante} unidade(s).`;
+      document.getElementById('erroQtd').classList.add('visible');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const res  = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome, produto: item, quantidade }),
+      });
+      const data = await res.json();
+
+      if (!res.ok || data.error) throw new Error(data.error || 'Erro desconhecido');
+
+      // Sucesso
+      beep();
+      document.getElementById('successMsg').innerHTML =
+        `<strong>${nome.split(' ')[0]}</strong>, sua doação de <strong>${quantidade}x ${item}</strong> foi registrada. ` +
+        `Pode trazer/enviar para a igreja. Deus te abençoe! 🌿`;
+      openModal('successModal');
+
+      // Atualiza dados em tempo real
+      this.reset();
+      document.getElementById('maxHint').textContent = '';
+      await Promise.all([carregarItens(), carregarProgresso()]);
+
+    } catch (err) {
+      beep();
+      document.getElementById('errorMsg').textContent =
+        err.message || 'Não foi possível registrar sua doação. Tente novamente.';
+      openModal('errorModal');
+    } finally {
+      setLoading(false);
+    }
+  });
+
+  /* ─── MODAIS ──────────────────────────────────────── */
+  document.getElementById('btnSuccessClose').addEventListener('click', () => closeModal('successModal'));
+  document.getElementById('btnErrorClose').addEventListener('click',   () => closeModal('errorModal'));
+
+  // Fecha ao clicar fora
+  ['successModal', 'errorModal'].forEach(id => {
+    document.getElementById(id).addEventListener('click', function(e) {
+      if (e.target === this) closeModal(id);
+    });
+  });
+
+  /* ─── INIT ────────────────────────────────────────── */
+  carregarItens();
+  carregarProgresso();
+</script>
+</body>
+</html>
