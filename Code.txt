@@ -1,0 +1,146 @@
+/**
+ * CESTA BÁSICA – INVB
+ * Backend API · Google Apps Script
+ * v1.0.0
+ *
+ * Endpoints:
+ *   GET  ?action=items    → lista itens disponíveis
+ *   GET  ?action=progress → percentual de progresso
+ *   POST (JSON body)      → registra doação
+ */
+
+// ─── CORS helper ────────────────────────────────────────────────────────────
+// Coloque aqui o domínio do seu GitHub Pages para maior segurança,
+// ou mantenha '*' para desenvolvimento.
+const ALLOWED_ORIGIN = '*';
+
+function setCorsHeaders_(output) {
+  return output
+    .setHeader('Access-Control-Allow-Origin', ALLOWED_ORIGIN)
+    .setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+    .setHeader('Access-Control-Allow-Headers', 'Content-Type');
+}
+
+function jsonResponse_(data, status) {
+  const output = ContentService
+    .createTextOutput(JSON.stringify(data))
+    .setMimeType(ContentService.MimeType.JSON);
+  return setCorsHeaders_(output);
+}
+
+// ─── doGet ──────────────────────────────────────────────────────────────────
+function doGet(e) {
+  const action = (e.parameter && e.parameter.action) || '';
+
+  try {
+    if (action === 'items') {
+      return jsonResponse_({ items: getAvailableItems_() });
+    }
+    if (action === 'progress') {
+      return jsonResponse_(getProgressData_());
+    }
+    // Fallback: retorna ambos (útil para debug)
+    return jsonResponse_({
+      items:   getAvailableItems_(),
+      progress: getProgressData_()
+    });
+  } catch (err) {
+    return jsonResponse_({ error: err.message }, 500);
+  }
+}
+
+// ─── doPost ─────────────────────────────────────────────────────────────────
+function doPost(e) {
+  try {
+    const body = JSON.parse(e.postData.contents);
+    const { nome, produto, quantidade } = body;
+
+    if (!nome || !produto || !quantidade) {
+      return jsonResponse_({ error: 'Campos obrigatórios ausentes: nome, produto, quantidade.' });
+    }
+
+    const msg = submitDonation_(nome, produto, Number(quantidade));
+    return jsonResponse_({ success: true, message: msg });
+
+  } catch (err) {
+    return jsonResponse_({ error: err.message });
+  }
+}
+
+// ─── getAvailableItems_ ─────────────────────────────────────────────────────
+/**
+ * Retorna lista de itens com quantidade restante > 0.
+ * Estrutura da aba "Estoque":
+ *   A: Nome do item | B: Quantidade total | C: Quantidade doada
+ */
+function getAvailableItems_() {
+  const sheet   = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Estoque');
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) return [];
+
+  return sheet
+    .getRange(2, 1, lastRow - 1, 3)
+    .getValues()
+    .filter(row => row[0] && row[0] !== 'SELECIONE UM ITEM')
+    .map(row => ({
+      nome:     String(row[0]),
+      restante: Math.max(0, Number(row[1]) - (Number(row[2]) || 0))
+    }))
+    .filter(item => item.restante > 0);
+}
+
+// ─── getProgressData_ ───────────────────────────────────────────────────────
+function getProgressData_() {
+  const sheet   = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Estoque');
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) return { percent: 0 };
+
+  let totalItens = 0;
+  let totalDoado = 0;
+
+  sheet
+    .getRange(2, 2, lastRow - 1, 2) // Colunas B e C
+    .getValues()
+    .forEach(row => {
+      totalItens += Number(row[0]) || 0;
+      totalDoado += Number(row[1]) || 0;
+    });
+
+  const percent = totalItens === 0 ? 0 : Math.round((totalDoado / totalItens) * 100);
+  return { percent };
+}
+
+// ─── submitDonation_ ────────────────────────────────────────────────────────
+function submitDonation_(nome, produto, quantidade) {
+  const ss      = SpreadsheetApp.getActiveSpreadsheet();
+  const estoque = ss.getSheetByName('Estoque');
+  const registro = ss.getSheetByName('Registro');
+
+  const lastRow      = estoque.getLastRow();
+  if (lastRow < 2) throw new Error('Estoque vazio.');
+
+  const dadosEstoque = estoque.getRange(2, 1, lastRow - 1, 3).getValues();
+  let found = false;
+
+  for (let i = 0; i < dadosEstoque.length; i++) {
+    if (dadosEstoque[i][0] === produto) {
+      const total          = Number(dadosEstoque[i][1]) || 0;
+      const atualDoado     = Number(dadosEstoque[i][2]) || 0;
+      const novaQtdDoada   = atualDoado + quantidade;
+
+      if (quantidade <= 0)            throw new Error('Quantidade deve ser maior que zero.');
+      if (novaQtdDoada > total)       throw new Error('Quantidade excede o estoque disponível.');
+
+      dadosEstoque[i][2] = novaQtdDoada;
+      found = true;
+      break;
+    }
+  }
+
+  if (!found) throw new Error('Produto não encontrado no estoque.');
+
+  estoque.getRange(2, 1, dadosEstoque.length, 3).setValues(dadosEstoque);
+  registro.appendRow([new Date(), nome, produto, quantidade]);
+
+  return 'Doação registrada com sucesso!';
+}

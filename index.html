@@ -6,311 +6,419 @@
   <title>Cesta Básica · INVB</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
   <style>
-    /* ── TOKENS ─────────────────────────────────────────── */
     :root {
-      --green-deep:   #1a4731;
-      --green-mid:    #2d6a4f;
-      --green-light:  #52b788;
-      --green-pale:   #d8f3dc;
-      --amber:        #f4a261;
-      --amber-deep:   #e76f51;
-      --cream:        #fdfaf4;
-      --ink:          #1c1c1e;
-      --muted:        #6b7280;
-      --border:       rgba(45,106,79,.15);
-      --radius-sm:    10px;
-      --radius-md:    18px;
-      --radius-lg:    28px;
-      --shadow-card:  0 4px 24px rgba(26,71,49,.10);
-      --shadow-float: 0 16px 48px rgba(26,71,49,.18);
-      --transition:   .25s cubic-bezier(.4,0,.2,1);
+      --bg:          #0d0f0e;
+      --surface:     #141716;
+      --surface-2:   #1c1f1d;
+      --border:      rgba(255,255,255,.07);
+      --border-hover:rgba(255,255,255,.14);
+      --gold:        #c9a96e;
+      --gold-light:  #e2c99a;
+      --gold-dim:    rgba(201,169,110,.12);
+      --green:       #4a9b6f;
+      --green-bright:#5cb87f;
+      --green-dim:   rgba(74,155,111,.15);
+      --text:        #f0ede8;
+      --text-muted:  #7a8078;
+      --text-soft:   #b5b8b2;
+      --danger:      #c0614a;
+      --danger-dim:  rgba(192,97,74,.12);
+      --radius:      14px;
+      --radius-lg:   22px;
+      --radius-xl:   32px;
     }
 
-    /* ── RESET ──────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--cream);
-      color: var(--ink);
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--text);
       min-height: 100vh;
       overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* ── BACKGROUND TEXTURE ─────────────────────────────── */
     body::before {
       content: '';
       position: fixed;
       inset: 0;
       background:
-        radial-gradient(ellipse 80% 60% at 20% 0%, rgba(82,183,136,.12) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 50% at 90% 100%, rgba(244,162,97,.10) 0%, transparent 55%);
+        radial-gradient(ellipse 55% 40% at 15% 10%, rgba(74,155,111,.07) 0%, transparent 70%),
+        radial-gradient(ellipse 45% 35% at 85% 90%, rgba(201,169,110,.06) 0%, transparent 70%);
       pointer-events: none;
       z-index: 0;
     }
 
-    /* ── LAYOUT ─────────────────────────────────────────── */
     .page {
       position: relative;
       z-index: 1;
-      max-width: 560px;
+      max-width: 520px;
       margin: 0 auto;
-      padding: 32px 16px 80px;
+      padding: 48px 20px 96px;
     }
 
-    /* ── HEADER ─────────────────────────────────────────── */
-    .header {
-      text-align: center;
-      padding: 16px 0 32px;
+    /* ── HERO ── */
+    .hero {
+      padding: 12px 0 44px;
+      animation: fadeUp .7s ease both;
     }
 
-    .header__badge {
-      display: inline-flex;
+    .hero__eyebrow {
+      display: flex;
       align-items: center;
-      gap: 6px;
-      background: var(--green-deep);
-      color: #fff;
-      font-size: 11px;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .hero__line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: .35;
+    }
+
+    .hero__label {
+      font-size: 10px;
       font-weight: 600;
-      letter-spacing: .12em;
+      letter-spacing: .22em;
       text-transform: uppercase;
-      padding: 5px 14px;
-      border-radius: 100px;
-      margin-bottom: 18px;
+      color: var(--gold);
     }
 
-    .header__badge::before {
-      content: '';
-      width: 6px; height: 6px;
-      background: var(--green-light);
-      border-radius: 50%;
-      animation: pulse 2s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%,100% { opacity: 1; transform: scale(1); }
-      50%      { opacity: .5; transform: scale(.8); }
-    }
-
-    .header__title {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(32px, 8vw, 48px);
-      font-weight: 900;
-      line-height: 1.05;
-      color: var(--green-deep);
+    .hero__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(52px, 13vw, 72px);
+      font-weight: 700;
+      line-height: .92;
       letter-spacing: -.02em;
+      color: var(--text);
     }
 
-    .header__title span {
+    .hero__title em {
       display: block;
-      color: var(--amber-deep);
-    }
-
-    .header__verse {
-      margin-top: 14px;
-      font-size: 13px;
-      color: var(--muted);
       font-style: italic;
-      line-height: 1.6;
-      max-width: 320px;
-      margin-inline: auto;
+      color: var(--gold);
+      font-weight: 400;
     }
 
-    /* ── PROGRESS CARD ──────────────────────────────────── */
-    .progress-card {
-      background: #fff;
+    .hero__desc {
+      margin-top: 20px;
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--text-muted);
+      line-height: 1.8;
+      max-width: 360px;
+    }
+
+    .hero__verse {
+      margin-top: 22px;
+      padding: 14px 18px;
+      border-left: 2px solid var(--gold);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      font-style: italic;
+      color: var(--text-soft);
+      line-height: 1.6;
+      background: var(--gold-dim);
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
+
+    .hero__verse cite {
+      display: block;
+      margin-top: 8px;
+      font-size: 11px;
+      font-style: normal;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      color: var(--gold);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    /* ── PROGRESS ── */
+    .progress-wrap {
+      margin-bottom: 16px;
+      animation: fadeUp .7s .1s ease both;
+    }
+
+    .progress-panel {
+      background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: 22px 24px;
-      margin-bottom: 20px;
-      box-shadow: var(--shadow-card);
-      animation: slideUp .5s ease both;
+      padding: 22px 26px;
+      position: relative;
+      overflow: hidden;
     }
 
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
+    .progress-panel::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: .3;
     }
 
-    .progress-card__header {
+    .progress-panel__top {
       display: flex;
       justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 12px;
+      align-items: flex-end;
+      margin-bottom: 16px;
     }
 
-    .progress-card__label {
-      font-size: 12px;
+    .progress-panel__label {
+      font-size: 11px;
       font-weight: 600;
-      letter-spacing: .08em;
+      letter-spacing: .14em;
       text-transform: uppercase;
-      color: var(--muted);
+      color: var(--text-muted);
     }
 
-    .progress-card__pct {
-      font-family: 'Playfair Display', serif;
-      font-size: 28px;
+    .progress-panel__pct {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 46px;
       font-weight: 700;
-      color: var(--green-deep);
+      color: var(--gold);
       line-height: 1;
+      letter-spacing: -.03em;
     }
 
-    .progress-track {
+    .progress-panel__pct span {
+      font-size: 20px;
+      opacity: .5;
+    }
+
+    .track {
       width: 100%;
-      height: 10px;
-      background: var(--green-pale);
+      height: 3px;
+      background: rgba(255,255,255,.05);
       border-radius: 100px;
       overflow: hidden;
     }
 
-    .progress-fill {
+    .track__fill {
       height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, var(--green-mid), var(--green-light));
+      background: linear-gradient(90deg, var(--green), var(--gold));
       border-radius: 100px;
-      transition: width 1.2s cubic-bezier(.4,0,.2,1);
+      transition: width 1.4s cubic-bezier(.4,0,.2,1);
+      position: relative;
     }
 
-    .progress-card__caption {
-      margin-top: 8px;
+    .track__fill::after {
+      content: '';
+      position: absolute;
+      right: -1px; top: 50%;
+      transform: translateY(-50%);
+      width: 7px; height: 7px;
+      background: var(--gold-light);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--gold);
+    }
+
+    .progress-panel__caption {
+      margin-top: 10px;
       font-size: 12px;
-      color: var(--muted);
+      color: var(--text-muted);
+      font-weight: 300;
     }
 
-    /* ── FORM CARD ──────────────────────────────────────── */
-    .form-card {
-      background: #fff;
+    /* ── FORM PANEL ── */
+    .form-panel {
+      background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: 28px 24px;
-      box-shadow: var(--shadow-card);
-      animation: slideUp .5s .1s ease both;
+      overflow: hidden;
+      animation: fadeUp .7s .2s ease both;
     }
 
-    .form-card__title {
-      font-family: 'Playfair Display', serif;
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--green-deep);
-      margin-bottom: 22px;
+    .form-panel__header {
+      padding: 20px 26px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
-    /* ── FIELD ──────────────────────────────────────────── */
-    .field {
-      margin-bottom: 18px;
+    .form-panel__icon {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: var(--green-dim);
+      border: 1px solid rgba(74,155,111,.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
     }
+
+    .form-panel__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .form-panel__body { padding: 26px; }
+
+    /* ── FIELD ── */
+    .field { margin-bottom: 18px; }
 
     .field__label {
-      display: block;
-      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 10px;
       font-weight: 600;
-      color: var(--ink);
-      margin-bottom: 7px;
-      letter-spacing: .01em;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
     }
+
+    .field__badge {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: .04em;
+      text-transform: none;
+      padding: 2px 9px;
+      border-radius: 100px;
+      background: var(--green-dim);
+      color: var(--green-bright);
+      border: 1px solid rgba(74,155,111,.18);
+      transition: opacity .3s;
+      white-space: nowrap;
+    }
+
+    .field__badge:empty { display: none; }
 
     .field__input,
     .field__select {
       width: 100%;
-      padding: 14px 16px;
-      border: 1.5px solid #e5e7eb;
-      border-radius: var(--radius-sm);
-      font-family: 'DM Sans', sans-serif;
+      padding: 13px 16px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-family: 'Outfit', sans-serif;
       font-size: 15px;
-      color: var(--ink);
-      background: #fafafa;
-      transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+      font-weight: 400;
+      color: var(--text);
+      transition: border-color .2s, box-shadow .2s, background .2s;
       appearance: none;
       -webkit-appearance: none;
+      outline: none;
     }
+
+    .field__input::placeholder { color: var(--text-muted); font-weight: 300; }
 
     .field__input:focus,
     .field__select:focus {
-      outline: none;
-      border-color: var(--green-light);
-      background: #fff;
-      box-shadow: 0 0 0 3px rgba(82,183,136,.15);
+      border-color: rgba(201,169,110,.35);
+      background: #1e211f;
+      box-shadow: 0 0 0 3px rgba(201,169,110,.06);
     }
 
     .field__select {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237a8078' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
       background-position: right 14px center;
-      padding-right: 42px;
+      padding-right: 40px;
       cursor: pointer;
     }
 
-    .field__select:disabled {
-      opacity: .5;
-      cursor: not-allowed;
-    }
+    .field__select option { background: #1c1f1d; color: var(--text); }
+    .field__select:disabled { opacity: .4; cursor: not-allowed; }
 
-    /* ── ITEM BADGE (restante) ──────────────────────────── */
-    .field__hint {
-      display: block;
-      margin-top: 5px;
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .badge-available {
-      display: inline-block;
-      background: var(--green-pale);
-      color: var(--green-deep);
+    .field__error {
+      display: none;
+      margin-top: 6px;
       font-size: 11px;
-      font-weight: 600;
-      padding: 2px 8px;
-      border-radius: 100px;
+      font-weight: 500;
+      color: var(--danger);
+      letter-spacing: .03em;
+    }
+    .field__error.show { display: block; }
+
+    /* ── SKELETON ── */
+    .skeleton {
+      height: 48px;
+      border-radius: var(--radius);
+      background: linear-gradient(90deg, var(--surface-2) 25%, #222624 50%, var(--surface-2) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.6s infinite;
+    }
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
     }
 
-    /* ── DIVIDER ────────────────────────────────────────── */
-    .divider {
-      height: 1px;
-      background: var(--border);
-      margin: 22px 0;
+    .sep { height: 1px; background: var(--border); margin: 22px 0; }
+
+    /* ── NOTICE ── */
+    .notice {
+      display: flex;
+      gap: 10px;
+      padding: 12px 14px;
+      background: rgba(255,255,255,.025);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--text-muted);
+      line-height: 1.65;
+      margin-bottom: 22px;
+    }
+    .notice__dot {
+      flex-shrink: 0;
+      width: 5px; height: 5px;
+      background: var(--gold);
+      border-radius: 50%;
+      margin-top: 6px;
+      opacity: .6;
     }
 
-    /* ── SUBMIT BUTTON ──────────────────────────────────── */
+    /* ── BUTTON ── */
     .btn-submit {
       width: 100%;
-      padding: 16px;
-      background: var(--green-deep);
-      color: #fff;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 15px;
-      font-weight: 600;
-      letter-spacing: .04em;
+      padding: 15px 20px;
+      background: var(--gold);
+      color: #0d0f0e;
+      font-family: 'Outfit', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
       border: none;
-      border-radius: var(--radius-md);
+      border-radius: var(--radius);
       cursor: pointer;
       position: relative;
       overflow: hidden;
-      transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+      transition: background .25s, transform .2s, box-shadow .25s;
     }
 
-    .btn-submit::after {
+    .btn-submit::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(135deg, rgba(255,255,255,.08), transparent);
+      background: linear-gradient(135deg, rgba(255,255,255,.18), transparent 55%);
     }
 
     .btn-submit:hover:not(:disabled) {
-      background: var(--green-mid);
+      background: var(--gold-light);
       transform: translateY(-1px);
-      box-shadow: 0 8px 24px rgba(26,71,49,.25);
+      box-shadow: 0 8px 28px rgba(201,169,110,.22);
     }
 
-    .btn-submit:active:not(:disabled) {
-      transform: translateY(0);
-      box-shadow: none;
-    }
+    .btn-submit:active:not(:disabled) { transform: translateY(0); box-shadow: none; }
 
     .btn-submit:disabled {
-      background: #d1d5db;
+      background: #252825;
+      color: var(--text-muted);
       cursor: not-allowed;
       transform: none;
     }
@@ -320,436 +428,339 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
+      position: relative;
     }
 
-    /* spinner */
     .spinner {
       display: none;
-      width: 16px; height: 16px;
-      border: 2px solid rgba(255,255,255,.3);
-      border-top-color: #fff;
+      width: 13px; height: 13px;
+      border: 2px solid rgba(0,0,0,.2);
+      border-top-color: #0d0f0e;
       border-radius: 50%;
-      animation: spin .7s linear infinite;
+      animation: spin .65s linear infinite;
     }
-
     @keyframes spin { to { transform: rotate(360deg); } }
+    .btn-submit.is-loading .spinner { display: block; }
+    .btn-submit.is-loading .btn-label { opacity: .5; }
 
-    .btn-submit.loading .spinner { display: block; }
-    .btn-submit.loading .btn-label { opacity: .7; }
-
-    /* ── NOTICE ─────────────────────────────────────────── */
-    .notice {
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-      background: #fffbeb;
-      border: 1px solid #fde68a;
-      border-radius: var(--radius-sm);
-      padding: 12px 14px;
-      font-size: 13px;
-      color: #92400e;
-      line-height: 1.5;
-      margin-bottom: 20px;
-    }
-
-    .notice__icon { flex-shrink: 0; font-size: 16px; margin-top: 1px; }
-
-    /* ── MODAL OVERLAY ──────────────────────────────────── */
-    .modal-overlay {
+    /* ── MODAL ── */
+    .modal {
       display: none;
       position: fixed;
       inset: 0;
       z-index: 9000;
-      background: rgba(0,0,0,.45);
-      backdrop-filter: blur(4px);
       align-items: center;
       justify-content: center;
-      padding: 16px;
+      padding: 20px;
+      background: rgba(0,0,0,.75);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
-
-    .modal-overlay.is-open {
-      display: flex;
-      animation: fadeIn .2s ease;
-    }
-
+    .modal.open { display: flex; animation: fadeIn .2s ease; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    .modal-box {
-      background: #fff;
-      border-radius: var(--radius-lg);
-      padding: 32px 28px;
-      max-width: 400px;
+    .modal__box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 38px 32px;
+      max-width: 380px;
       width: 100%;
       text-align: center;
-      box-shadow: var(--shadow-float);
-      animation: scaleIn .25s cubic-bezier(.34,1.56,.64,1);
+      position: relative;
+      overflow: hidden;
+      animation: popIn .3s cubic-bezier(.34,1.56,.64,1) both;
     }
 
-    @keyframes scaleIn {
-      from { opacity: 0; transform: scale(.88); }
-      to   { opacity: 1; transform: scale(1); }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(.88) translateY(16px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
     }
 
-    .modal-box__icon {
-      font-size: 48px;
-      margin-bottom: 14px;
-      display: block;
+    .modal__box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
     }
 
-    .modal-box__title {
-      font-family: 'Playfair Display', serif;
-      font-size: 22px;
+    .modal__glyph { font-size: 48px; display: block; margin-bottom: 18px; }
+
+    .modal__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
       font-weight: 700;
-      color: var(--green-deep);
-      margin-bottom: 10px;
+      margin-bottom: 12px;
+      letter-spacing: -.02em;
     }
 
-    .modal-box__title--error { color: var(--amber-deep); }
+    .modal__title--success { color: var(--gold); }
+    .modal__title--error   { color: var(--danger); }
 
-    .modal-box__msg {
+    .modal__msg {
       font-size: 14px;
-      color: var(--muted);
-      line-height: 1.6;
-      margin-bottom: 24px;
+      font-weight: 300;
+      color: var(--text-soft);
+      line-height: 1.7;
+      margin-bottom: 28px;
     }
 
     .btn-modal {
-      padding: 13px 32px;
-      border: none;
-      border-radius: var(--radius-md);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      font-weight: 600;
+      padding: 12px 30px;
+      border-radius: var(--radius);
+      font-family: 'Outfit', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
       cursor: pointer;
-      transition: background var(--transition), transform var(--transition);
+      border: none;
+      transition: transform .2s, opacity .2s;
     }
+    .btn-modal:hover { transform: translateY(-1px); opacity: .9; }
+    .btn-modal--success { background: var(--gold); color: #0d0f0e; }
+    .btn-modal--error   { background: var(--danger-dim); color: var(--danger); border: 1px solid rgba(192,97,74,.25); }
 
-    .btn-modal--success {
-      background: var(--green-deep);
-      color: #fff;
-    }
-
-    .btn-modal--success:hover { background: var(--green-mid); }
-
-    .btn-modal--error {
-      background: #fee2e2;
-      color: var(--amber-deep);
-    }
-
-    .btn-modal--error:hover { background: #fecaca; }
-
-    /* ── LOADING STATE ──────────────────────────────────── */
-    .skeleton {
-      display: block;
-      height: 48px;
-      border-radius: var(--radius-sm);
-      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.4s infinite;
-    }
-
-    @keyframes shimmer {
-      0%   { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-
-    /* ── MAX QTD HINT ───────────────────────────────────── */
-    #maxHint {
-      margin-top: 5px;
-      font-size: 12px;
-      color: var(--muted);
-      min-height: 16px;
-    }
-
-    /* ── FOOTER ─────────────────────────────────────────── */
     .footer {
       text-align: center;
-      margin-top: 32px;
-      font-size: 11px;
-      color: #c4c9d4;
-      letter-spacing: .04em;
+      margin-top: 40px;
+      font-size: 10px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: #262a27;
     }
 
-    /* ── ERROR INLINE ───────────────────────────────────── */
-    .field__error {
-      display: none;
-      margin-top: 5px;
-      font-size: 12px;
-      color: var(--amber-deep);
-      font-weight: 500;
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
-    .field__error.visible { display: block; }
+    @media (max-width: 420px) {
+      .page { padding: 32px 16px 80px; }
+      .hero__title { font-size: 52px; }
+      .form-panel__body { padding: 20px 18px; }
+      .modal__box { padding: 28px 22px; }
+    }
   </style>
 </head>
 <body>
 
 <div class="page">
 
-  <!-- HEADER -->
-  <header class="header">
-    <div class="header__badge">Arrecadação em andamento</div>
-    <h1 class="header__title">
-      Cesta Básica
-      <span>INVB</span>
+  <header class="hero">
+    <div class="hero__eyebrow">
+      <div class="hero__line"></div>
+      <span class="hero__label">INVB · Arrecadação</span>
+      <div class="hero__line"></div>
+    </div>
+    <h1 class="hero__title">
+      Cesta<br><em>Básica</em>
     </h1>
-    <p class="header__verse">
-      "Enquanto tivermos oportunidade, façamos o bem a todos,<br>
-      principalmente aos da família da fé." — Gl 6:10
+    <p class="hero__desc">
+      Estamos arrecadando alimentos para as cestas deste mês.
+      Contribua com o que estiver ao seu alcance — cada item faz diferença.
     </p>
+    <blockquote class="hero__verse">
+      "Enquanto tivermos oportunidade, façamos o bem a todos,
+      principalmente aos da família da fé."
+      <cite>Gálatas 6:10</cite>
+    </blockquote>
   </header>
 
-  <!-- PROGRESSO -->
-  <div class="progress-card" id="progressCard">
-    <div class="progress-card__header">
-      <span class="progress-card__label">Progresso geral</span>
-      <span class="progress-card__pct" id="pctLabel">—</span>
+  <div class="progress-wrap">
+    <div class="progress-panel">
+      <div class="progress-panel__top">
+        <span class="progress-panel__label">Progresso geral</span>
+        <span class="progress-panel__pct" id="pctLabel">—<span>%</span></span>
+      </div>
+      <div class="track">
+        <div class="track__fill" id="trackFill"></div>
+      </div>
+      <p class="progress-panel__caption" id="progressCaption">Carregando dados…</p>
     </div>
-    <div class="progress-track">
-      <div class="progress-fill" id="progressFill"></div>
-    </div>
-    <p class="progress-card__caption" id="progressCaption">Carregando dados…</p>
   </div>
 
-  <!-- FORMULÁRIO -->
-  <div class="form-card">
-    <h2 class="form-card__title">Registrar doação</h2>
-
-    <div class="notice">
-      <span class="notice__icon">💡</span>
-      <span>Para doar mais de um item, basta repetir o processo após confirmar cada doação.</span>
+  <div class="form-panel">
+    <div class="form-panel__header">
+      <div class="form-panel__icon">🌾</div>
+      <h2 class="form-panel__title">Registrar doação</h2>
     </div>
+    <div class="form-panel__body">
 
-    <form id="donationForm" novalidate>
-
-      <!-- Nome -->
-      <div class="field">
-        <label class="field__label" for="nome">Seu nome</label>
-        <input
-          class="field__input"
-          type="text"
-          id="nome"
-          name="nome"
-          placeholder="Ex: Maria Silva"
-          autocomplete="name"
-          required
-        />
-        <span class="field__error" id="erroNome">Por favor, informe seu nome.</span>
+      <div class="notice">
+        <div class="notice__dot"></div>
+        <span>Para doar mais de um item, basta repetir o processo após confirmar cada doação.</span>
       </div>
 
-      <!-- Item -->
-      <div class="field">
-        <label class="field__label" for="item">Item para doação</label>
-        <div id="itemSkeleton" class="skeleton"></div>
-        <select class="field__select" id="item" name="item" required style="display:none">
-          <option value="">Selecione um item…</option>
-        </select>
-        <span class="field__error" id="erroItem">Selecione um item da lista.</span>
-      </div>
+      <form id="donationForm" novalidate>
 
-      <!-- Quantidade -->
-      <div class="field">
-        <label class="field__label" for="quantidade">Quantidade</label>
-        <input
-          class="field__input"
-          type="number"
-          id="quantidade"
-          name="quantidade"
-          min="1"
-          placeholder="1"
-          required
-        />
-        <span id="maxHint"></span>
-        <span class="field__error" id="erroQtd">Informe uma quantidade válida.</span>
-      </div>
+        <div class="field">
+          <label class="field__label" for="nome">Seu nome</label>
+          <input class="field__input" type="text" id="nome" placeholder="Ex: Maria Silva"
+                 autocomplete="name" required />
+          <span class="field__error" id="erroNome">Informe seu nome.</span>
+        </div>
 
-      <div class="divider"></div>
+        <div class="field">
+          <label class="field__label" for="item">
+            Item para doação
+            <span class="field__badge" id="itemBadge"></span>
+          </label>
+          <div id="itemSkeleton" class="skeleton"></div>
+          <select class="field__select" id="item" required style="display:none">
+            <option value="">Selecione um item…</option>
+          </select>
+          <span class="field__error" id="erroItem">Selecione um item da lista.</span>
+        </div>
 
-      <button type="submit" class="btn-submit" id="btnEnviar">
-        <span class="btn-submit__inner">
-          <span class="spinner"></span>
-          <span class="btn-label">Confirmar doação</span>
-        </span>
-      </button>
+        <div class="field">
+          <label class="field__label" for="quantidade">Quantidade</label>
+          <input class="field__input" type="number" id="quantidade"
+                 placeholder="1" min="1" required />
+          <span class="field__error" id="erroQtd">Informe uma quantidade válida.</span>
+        </div>
 
-    </form>
+        <div class="sep"></div>
+
+        <button type="submit" class="btn-submit" id="btnEnviar">
+          <span class="btn-submit__inner">
+            <span class="spinner"></span>
+            <span class="btn-label">Confirmar Doação</span>
+          </span>
+        </button>
+
+      </form>
+    </div>
   </div>
 
-  <footer class="footer">v1.0.0 · INVB · Cesta Básica</footer>
+  <p class="footer">v1.0.0 &nbsp;·&nbsp; INVB &nbsp;·&nbsp; Cesta Básica</p>
 </div>
 
 <!-- MODAL SUCESSO -->
-<div class="modal-overlay" id="successModal" role="dialog" aria-modal="true">
-  <div class="modal-box">
-    <span class="modal-box__icon">🙏</span>
-    <h3 class="modal-box__title">Doação registrada!</h3>
-    <p class="modal-box__msg" id="successMsg"></p>
+<div class="modal" id="successModal">
+  <div class="modal__box">
+    <span class="modal__glyph">🙏</span>
+    <h3 class="modal__title modal__title--success">Doação registrada!</h3>
+    <p class="modal__msg" id="successMsg"></p>
     <button class="btn-modal btn-modal--success" id="btnSuccessClose">Fechar</button>
   </div>
 </div>
 
 <!-- MODAL ERRO -->
-<div class="modal-overlay" id="errorModal" role="dialog" aria-modal="true">
-  <div class="modal-box">
-    <span class="modal-box__icon">⚠️</span>
-    <h3 class="modal-box__title modal-box__title--error">Algo deu errado</h3>
-    <p class="modal-box__msg" id="errorMsg"></p>
+<div class="modal" id="errorModal">
+  <div class="modal__box">
+    <span class="modal__glyph">⚠️</span>
+    <h3 class="modal__title modal__title--error">Algo deu errado</h3>
+    <p class="modal__msg" id="errorMsg"></p>
     <button class="btn-modal btn-modal--error" id="btnErrorClose">Tentar novamente</button>
   </div>
 </div>
 
 <script>
-  /* ─── CONFIG ──────────────────────────────────────── */
-  // 👉 Substitua pela URL do seu Web App publicado no Apps Script
-  const API_URL = 'https://script.google.com/macros/s/AKfycbz_6cLHnLTtGAVTW_m8j7NGfyOdeGLGR1YkkIBjEaMSOKp1H_S-0bZJTFK4gBA9ct73/exec';
+  const API_URL = 'https://script.google.com/macros/s/SEU_DEPLOYMENT_ID_AQUI/exec';
 
-  /* ─── ESTADO ──────────────────────────────────────── */
   let itemsCache = [];
 
-  /* ─── UTILITÁRIOS ─────────────────────────────────── */
-  function beep() {
+  function beep(freq = 880) {
     try {
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const osc = ctx.createOscillator();
+      const ctx  = new (window.AudioContext || window.webkitAudioContext)();
+      const osc  = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = 'sine';
-      osc.frequency.value = 880;
-      gain.gain.setValueAtTime(.3, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(.001, ctx.currentTime + .3);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start();
-      osc.stop(ctx.currentTime + .3);
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(.22, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(.001, ctx.currentTime + .35);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(); osc.stop(ctx.currentTime + .35);
     } catch {}
   }
 
-  function setLoading(active) {
+  function openModal(id)  { document.getElementById(id).classList.add('open'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+  function setLoading(on) {
     const btn = document.getElementById('btnEnviar');
-    if (active) {
-      btn.classList.add('loading');
-      btn.disabled = true;
-      btn.querySelector('.btn-label').textContent = 'Enviando…';
-    } else {
-      btn.classList.remove('loading');
-      btn.disabled = false;
-      btn.querySelector('.btn-label').textContent = 'Confirmar doação';
-    }
+    btn.classList.toggle('is-loading', on);
+    btn.disabled = on;
+    btn.querySelector('.btn-label').textContent = on ? 'Enviando…' : 'Confirmar Doação';
   }
 
-  function openModal(id) {
-    document.getElementById(id).classList.add('is-open');
+  function clearErrors() {
+    document.querySelectorAll('.field__error').forEach(el => el.classList.remove('show'));
   }
 
-  function closeModal(id) {
-    document.getElementById(id).classList.remove('is-open');
-  }
-
-  /* ─── CARREGA ITENS ───────────────────────────────── */
   async function carregarItens() {
     const skeleton = document.getElementById('itemSkeleton');
     const select   = document.getElementById('item');
     skeleton.style.display = 'block';
     select.style.display   = 'none';
-
     try {
       const res  = await fetch(`${API_URL}?action=items`);
       const data = await res.json();
       itemsCache = data.items || [];
-
       select.innerHTML = '<option value="">Selecione um item…</option>';
-      itemsCache.forEach(item => {
-        const opt = document.createElement('option');
-        opt.value = item.nome;
-        opt.textContent = `${item.nome}`;
-        opt.dataset.restante = item.restante;
-        select.appendChild(opt);
+      itemsCache.forEach(it => {
+        const o = document.createElement('option');
+        o.value = it.nome;
+        o.textContent = it.nome;
+        o.dataset.restante = it.restante;
+        select.appendChild(o);
       });
-
-      skeleton.style.display = 'none';
-      select.style.display   = 'block';
     } catch {
+      select.innerHTML = '<option value="">Erro ao carregar itens</option>';
+    } finally {
       skeleton.style.display = 'none';
       select.style.display   = 'block';
-      select.innerHTML = '<option value="">Erro ao carregar itens</option>';
     }
   }
 
-  /* ─── CARREGA PROGRESSO ───────────────────────────── */
   async function carregarProgresso() {
     try {
       const res  = await fetch(`${API_URL}?action=progress`);
       const data = await res.json();
       const pct  = data.percent ?? 0;
-
-      document.getElementById('pctLabel').textContent    = `${pct}%`;
-      document.getElementById('progressFill').style.width = `${pct}%`;
+      document.getElementById('pctLabel').innerHTML = `${pct}<span>%</span>`;
+      document.getElementById('trackFill').style.width = `${pct}%`;
       document.getElementById('progressCaption').textContent =
-        pct === 100
-          ? '🎉 Meta atingida! Obrigado a todos!'
-          : `${pct}% dos alimentos já foram garantidos`;
+        pct >= 100 ? '🎉 Meta atingida! Obrigado a todos!' : `${pct}% dos alimentos já estão garantidos`;
     } catch {
       document.getElementById('progressCaption').textContent = 'Não foi possível carregar o progresso.';
     }
   }
 
-  /* ─── ATUALIZA HINT DE QUANTIDADE ────────────────── */
   document.getElementById('item').addEventListener('change', function () {
-    const hint = document.getElementById('maxHint');
-    const qtd  = document.getElementById('quantidade');
-    const selected = this.options[this.selectedIndex];
-    const restante = selected?.dataset?.restante;
-
-    if (restante) {
-      hint.innerHTML = `<span class="badge-available">${restante} unidades disponíveis</span>`;
-      qtd.max = restante;
-    } else {
-      hint.textContent = '';
-      qtd.removeAttribute('max');
-    }
+    const badge = document.getElementById('itemBadge');
+    const qtd   = document.getElementById('quantidade');
+    const opt   = this.options[this.selectedIndex];
+    const rest  = opt?.dataset?.restante;
+    if (rest) { badge.textContent = `${rest} disponíveis`; qtd.max = rest; }
+    else       { badge.textContent = ''; qtd.removeAttribute('max'); }
   });
 
-  /* ─── SUBMIT ──────────────────────────────────────── */
   document.getElementById('donationForm').addEventListener('submit', async function (e) {
     e.preventDefault();
-
-    // Limpa erros
-    document.querySelectorAll('.field__error').forEach(el => el.classList.remove('visible'));
+    clearErrors();
 
     const nome      = document.getElementById('nome').value.trim();
     const item      = document.getElementById('item').value;
     const quantidade = parseInt(document.getElementById('quantidade').value, 10);
 
-    // Validação inline
-    let valid = true;
-    if (!nome) {
-      document.getElementById('erroNome').classList.add('visible');
-      valid = false;
-    }
-    if (!item) {
-      document.getElementById('erroItem').classList.add('visible');
-      valid = false;
-    }
-    if (!quantidade || quantidade < 1) {
-      document.getElementById('erroQtd').classList.add('visible');
-      valid = false;
-    }
-    if (!valid) return;
+    let ok = true;
+    if (!nome)                { document.getElementById('erroNome').classList.add('show'); ok = false; }
+    if (!item)                { document.getElementById('erroItem').classList.add('show'); ok = false; }
+    if (!quantidade || quantidade < 1) { document.getElementById('erroQtd').classList.add('show');  ok = false; }
+    if (!ok) return;
 
-    // Valida contra cache
     const produto = itemsCache.find(i => i.nome === item);
-    if (!produto) {
-      document.getElementById('erroItem').textContent = 'Item inválido. Recarregue a página.';
-      document.getElementById('erroItem').classList.add('visible');
-      return;
-    }
-    if (quantidade > produto.restante) {
-      document.getElementById('erroQtd').textContent = `Máximo disponível: ${produto.restante} unidade(s).`;
-      document.getElementById('erroQtd').classList.add('visible');
+    if (quantidade > produto?.restante) {
+      const el = document.getElementById('erroQtd');
+      el.textContent = `Máximo disponível: ${produto.restante} unidade(s).`;
+      el.classList.add('show');
       return;
     }
 
     setLoading(true);
-
     try {
       const res  = await fetch(API_URL, {
         method: 'POST',
@@ -757,23 +768,20 @@
         body: JSON.stringify({ nome, produto: item, quantidade }),
       });
       const data = await res.json();
-
       if (!res.ok || data.error) throw new Error(data.error || 'Erro desconhecido');
 
-      // Sucesso
-      beep();
+      beep(880);
+      const primeiro = nome.split(' ')[0];
       document.getElementById('successMsg').innerHTML =
-        `<strong>${nome.split(' ')[0]}</strong>, sua doação de <strong>${quantidade}x ${item}</strong> foi registrada. ` +
-        `Pode trazer/enviar para a igreja. Deus te abençoe! 🌿`;
+        `<strong>${primeiro}</strong>, sua doação de <strong>${quantidade}x ${item}</strong> foi registrada com sucesso. Pode trazer ou enviar para a igreja. Deus te abençoe! 🌿`;
       openModal('successModal');
 
-      // Atualiza dados em tempo real
       this.reset();
-      document.getElementById('maxHint').textContent = '';
+      document.getElementById('itemBadge').textContent = '';
       await Promise.all([carregarItens(), carregarProgresso()]);
 
     } catch (err) {
-      beep();
+      beep(260);
       document.getElementById('errorMsg').textContent =
         err.message || 'Não foi possível registrar sua doação. Tente novamente.';
       openModal('errorModal');
@@ -782,18 +790,14 @@
     }
   });
 
-  /* ─── MODAIS ──────────────────────────────────────── */
-  document.getElementById('btnSuccessClose').addEventListener('click', () => closeModal('successModal'));
-  document.getElementById('btnErrorClose').addEventListener('click',   () => closeModal('errorModal'));
-
-  // Fecha ao clicar fora
-  ['successModal', 'errorModal'].forEach(id => {
-    document.getElementById(id).addEventListener('click', function(e) {
-      if (e.target === this) closeModal(id);
+  document.getElementById('btnSuccessClose').onclick = () => closeModal('successModal');
+  document.getElementById('btnErrorClose').onclick   = () => closeModal('errorModal');
+  ['successModal','errorModal'].forEach(id => {
+    document.getElementById(id).addEventListener('click', e => {
+      if (e.target === e.currentTarget) closeModal(id);
     });
   });
 
-  /* ─── INIT ────────────────────────────────────────── */
   carregarItens();
   carregarProgresso();
 </script>
