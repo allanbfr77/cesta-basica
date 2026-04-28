@@ -66,6 +66,7 @@
     .hero {
       padding: 12px 0 44px;
       animation: fadeUp .7s ease both;
+      text-align: center;
     }
 
     .hero__eyebrow {
@@ -113,19 +114,22 @@
       color: var(--text-muted);
       line-height: 1.8;
       max-width: 360px;
+      margin-inline: auto;
     }
 
     .hero__verse {
       margin-top: 22px;
-      padding: 14px 18px;
-      border-left: 2px solid var(--gold);
+      padding: 16px 20px;
+      border: 1px solid rgba(201,169,110,.2);
+      border-top: 2px solid var(--gold);
       font-family: 'Cormorant Garamond', serif;
       font-size: 16px;
       font-style: italic;
       color: var(--text-soft);
       line-height: 1.6;
       background: var(--gold-dim);
-      border-radius: 0 var(--radius) var(--radius) 0;
+      border-radius: var(--radius);
+      text-align: center;
     }
 
     .hero__verse cite {
@@ -597,7 +601,7 @@
 
         <div class="field">
           <label class="field__label" for="nome">Seu nome</label>
-          <input class="field__input" type="text" id="nome" placeholder="Ex: Maria Silva"
+          <input class="field__input" type="text" id="nome" placeholder="Ex: Jesus Cristo"
                  autocomplete="name" required />
           <span class="field__error" id="erroNome">Informe seu nome.</span>
         </div>
