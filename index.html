@@ -10,25 +10,25 @@
 
   <style>
     :root {
-      --bg:          #0d0f0e;
-      --surface:     #141716;
-      --surface-2:   #1c1f1d;
-      --border:      rgba(255,255,255,.07);
-      --border-hover:rgba(255,255,255,.14);
-      --gold:        #c9a96e;
-      --gold-light:  #e2c99a;
-      --gold-dim:    rgba(201,169,110,.12);
-      --green:       #4a9b6f;
-      --green-bright:#5cb87f;
-      --green-dim:   rgba(74,155,111,.15);
-      --text:        #f0ede8;
-      --text-muted:  #7a8078;
-      --text-soft:   #b5b8b2;
-      --danger:      #c0614a;
-      --danger-dim:  rgba(192,97,74,.12);
-      --radius:      14px;
-      --radius-lg:   22px;
-      --radius-xl:   32px;
+      --bg:           #0d0f0e;
+      --surface:      #141716;
+      --surface-2:    #1c1f1d;
+      --border:       rgba(255,255,255,.07);
+      --border-hover: rgba(255,255,255,.14);
+      --gold:         #c9a96e;
+      --gold-light:   #e2c99a;
+      --gold-dim:     rgba(201,169,110,.12);
+      --green:        #4a9b6f;
+      --green-bright: #5cb87f;
+      --green-dim:    rgba(74,155,111,.15);
+      --text:         #f0ede8;
+      --text-muted:   #7a8078;
+      --text-soft:    #b5b8b2;
+      --danger:       #c0614a;
+      --danger-dim:   rgba(192,97,74,.12);
+      --radius:       14px;
+      --radius-lg:    22px;
+      --radius-xl:    32px;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -286,17 +286,16 @@
     }
 
     .field__badge {
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: .04em;
-      text-transform: none;
-      padding: 2px 9px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: .02em;
+      padding: 3px 10px;
       border-radius: 100px;
-      background: var(--green-dim);
-      color: var(--green-bright);
-      border: 1px solid rgba(74,155,111,.18);
-      transition: opacity .3s;
-      white-space: nowrap;
+      background: var(--gold-dim);
+      color: var(--gold);
+      border: 1px solid rgba(201,169,110,.3);
+      box-shadow: 0 0 10px rgba(201,169,110,.1);
+      transition: all .3s ease;
     }
 
     .field__badge:empty { display: none; }
@@ -562,13 +561,11 @@
       Cesta<br><em>Básica</em>
     </h1>
     <p class="hero__desc">
-      Estamos arrecadando alimentos para as cestas deste mês.
-      Contribua com o que estiver ao seu alcance — cada item faz diferença.
+      Estamos arrecadando os alimentos listados abaixo para a composição das cestas básicas deste mês. Você pode contribuir com a quantidade que estiver ao seu alcance.
     </p>
     <blockquote class="hero__verse">
-      "Enquanto tivermos oportunidade, façamos o bem a todos,
-      principalmente aos da família da fé."
-      <cite>Gálatas 6:10</cite>
+      "Por isso, enquanto tivermos oportunidade, façamos o bem a todos, mas principalmente aos da família da fé." 
+      <cite>Gl.6:10</cite>
     </blockquote>
   </header>
 
@@ -594,14 +591,15 @@
 
       <div class="notice">
         <div class="notice__dot"></div>
-        <span>Para doar mais de um item, basta repetir o processo após confirmar cada doação.</span>
+        <span>Caso deseje doar outro item, repita o processo: informe seu nome, selecione o item, indique a quantidade e clique novamente em "Confirmar Doação".
+</span>
       </div>
 
       <form id="donationForm" novalidate>
 
         <div class="field">
           <label class="field__label" for="nome">Seu nome</label>
-          <input class="field__input" type="text" id="nome" placeholder="Ex: Jesus Cristo"
+          <input class="field__input" type="text" id="nome" placeholder="Digite aqui seu nome"
                  autocomplete="name" required />
           <span class="field__error" id="erroNome">Informe seu nome.</span>
         </div>
@@ -638,10 +636,9 @@
     </div>
   </div>
 
-  <p class="footer">v1.0.0 &nbsp;·&nbsp; INVB &nbsp;·&nbsp; Cesta Básica</p>
+  <p class="footer">v1.2.0 &nbsp;·&nbsp; INVB &nbsp;·&nbsp; Cesta Básica</p>
 </div>
 
-<!-- MODAL SUCESSO -->
 <div class="modal" id="successModal">
   <div class="modal__box">
     <span class="modal__glyph">🙏</span>
@@ -651,7 +648,6 @@
   </div>
 </div>
 
-<!-- MODAL ERRO -->
 <div class="modal" id="errorModal">
   <div class="modal__box">
     <span class="modal__glyph">⚠️</span>
@@ -662,10 +658,11 @@
 </div>
 
 <script>
-  const API_URL = 'AKfycbz_6cLHnLTtGAVTW_m8j7NGfyOdeGLGR1YkkIBjEaMSOKp1H_S-0bZJTFK4gBA9ct73';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbz_6cLHnLTtGAVTW_m8j7NGfyOdeGLGR1YkkIBjEaMSOKp1H_S-0bZJTFK4gBA9ct73/exec';
 
   let itemsCache = [];
 
+  /* ── Utilidades de áudio ── */
   function beep(freq = 880) {
     try {
       const ctx  = new (window.AudioContext || window.webkitAudioContext)();
@@ -680,9 +677,11 @@
     } catch {}
   }
 
+  /* ── Modais ── */
   function openModal(id)  { document.getElementById(id).classList.add('open'); }
   function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
+  /* ── Loading do botão ── */
   function setLoading(on) {
     const btn = document.getElementById('btnEnviar');
     btn.classList.toggle('is-loading', on);
@@ -690,35 +689,65 @@
     btn.querySelector('.btn-label').textContent = on ? 'Enviando…' : 'Confirmar Doação';
   }
 
+  /* ── Limpa erros de validação ── */
   function clearErrors() {
     document.querySelectorAll('.field__error').forEach(el => el.classList.remove('show'));
   }
 
+  /* ── Atualiza badge e limites do campo quantidade ── */
+  function atualizarBadge() {
+    const badge  = document.getElementById('itemBadge');
+    const qtd    = document.getElementById('quantidade');
+    const select = document.getElementById('item');
+    const opt    = select.options[select.selectedIndex];
+
+    if (opt && opt.dataset.restante) {
+      const restante = opt.dataset.restante;
+      const unidade  = opt.dataset.unidade || 'un';
+      badge.innerHTML = `<span style="color:var(--gold);font-weight:700;">${restante} ${unidade} restante(s)</span>`;
+      qtd.max         = restante;
+      qtd.placeholder = `Até ${restante}`;
+    } else {
+      badge.innerHTML = '';
+      qtd.removeAttribute('max');
+      qtd.placeholder = '1';
+    }
+  }
+
+  /* ── Carrega itens disponíveis ── */
   async function carregarItens() {
     const skeleton = document.getElementById('itemSkeleton');
     const select   = document.getElementById('item');
     skeleton.style.display = 'block';
     select.style.display   = 'none';
+
     try {
       const res  = await fetch(`${API_URL}?action=items`);
       const data = await res.json();
       itemsCache = data.items || [];
+
       select.innerHTML = '<option value="">Selecione um item…</option>';
+
       itemsCache.forEach(it => {
-        const o = document.createElement('option');
-        o.value = it.nome;
-        o.textContent = it.nome;
+        const o       = document.createElement('option');
+        o.value       = it.nome;
+        o.textContent = `${it.nome.toUpperCase()} (${it.unidade.toLowerCase()})`;
         o.dataset.restante = it.restante;
+        o.dataset.unidade  = it.unidade;
         select.appendChild(o);
       });
+
+      // Garante que o badge reflita a seleção atual após recarregar
+      atualizarBadge();
     } catch {
-      select.innerHTML = '<option value="">Erro ao carregar itens</option>';
+      select.innerHTML = '<option value="">Erro ao carregar lista</option>';
     } finally {
       skeleton.style.display = 'none';
       select.style.display   = 'block';
     }
   }
 
+  /* ── Carrega barra de progresso ── */
   async function carregarProgresso() {
     try {
       const res  = await fetch(`${API_URL}?action=progress`);
@@ -727,39 +756,37 @@
       document.getElementById('pctLabel').innerHTML = `${pct}<span>%</span>`;
       document.getElementById('trackFill').style.width = `${pct}%`;
       document.getElementById('progressCaption').textContent =
-        pct >= 100 ? '🎉 Meta atingida! Obrigado a todos!' : `${pct}% dos alimentos já estão garantidos`;
+        pct >= 100
+          ? '🎉 Meta atingida! Obrigado a todos!'
+          : `${pct}% Progresso das doações de alimentos para cestas básicas`;
     } catch {
-      document.getElementById('progressCaption').textContent = 'Não foi possível carregar o progresso.';
+      document.getElementById('progressCaption').textContent =
+        'Não foi possível carregar o progresso.';
     }
   }
 
-  document.getElementById('item').addEventListener('change', function () {
-    const badge = document.getElementById('itemBadge');
-    const qtd   = document.getElementById('quantidade');
-    const opt   = this.options[this.selectedIndex];
-    const rest  = opt?.dataset?.restante;
-    if (rest) { badge.textContent = `${rest} disponíveis`; qtd.max = rest; }
-    else       { badge.textContent = ''; qtd.removeAttribute('max'); }
-  });
+  /* ── Evento único de mudança no select de itens ── */
+  document.getElementById('item').addEventListener('change', atualizarBadge);
 
+  /* ── Envio do formulário ── */
   document.getElementById('donationForm').addEventListener('submit', async function (e) {
     e.preventDefault();
     clearErrors();
 
-    const nome      = document.getElementById('nome').value.trim();
-    const item      = document.getElementById('item').value;
+    const nome       = document.getElementById('nome').value.trim();
+    const item       = document.getElementById('item').value;
     const quantidade = parseInt(document.getElementById('quantidade').value, 10);
 
     let ok = true;
-    if (!nome)                { document.getElementById('erroNome').classList.add('show'); ok = false; }
-    if (!item)                { document.getElementById('erroItem').classList.add('show'); ok = false; }
-    if (!quantidade || quantidade < 1) { document.getElementById('erroQtd').classList.add('show');  ok = false; }
+    if (!nome)                        { document.getElementById('erroNome').classList.add('show'); ok = false; }
+    if (!item)                        { document.getElementById('erroItem').classList.add('show'); ok = false; }
+    if (!quantidade || quantidade < 1){ document.getElementById('erroQtd').classList.add('show');  ok = false; }
     if (!ok) return;
 
     const produto = itemsCache.find(i => i.nome === item);
-    if (quantidade > produto?.restante) {
+    if (produto && quantidade > produto.restante) {
       const el = document.getElementById('erroQtd');
-      el.textContent = `Máximo disponível: ${produto.restante} unidade(s).`;
+      el.textContent = `Máximo disponível: ${produto.restante} ${produto.unidade}.`;
       el.classList.add('show');
       return;
     }
@@ -767,41 +794,44 @@
     setLoading(true);
     try {
       const res  = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome, produto: item, quantidade }),
+        method:  'POST',
+        headers: { 'Content-Type': 'text/plain' }, // evita preflight CORS no Apps Script
+        body:    JSON.stringify({ nome, produto: item, quantidade }),
       });
       const data = await res.json();
-      if (!res.ok || data.error) throw new Error(data.error || 'Erro desconhecido');
+      if (data.error) throw new Error(data.error);
 
       beep(880);
       const primeiro = nome.split(' ')[0];
       document.getElementById('successMsg').innerHTML =
-        `<strong>${primeiro}</strong>, sua doação de <strong>${quantidade}x ${item}</strong> foi registrada com sucesso. Pode trazer ou enviar para a igreja. Deus te abençoe! 🌿`;
+        `<strong>${primeiro}</strong>, sua doação de <strong>${quantidade}x ${item}</strong> foi registrada com sucesso e já pode ser enviada ou levada até a igreja. Deus te abençoe!`;
       openModal('successModal');
 
       this.reset();
-      document.getElementById('itemBadge').textContent = '';
+      document.getElementById('itemBadge').innerHTML = '';
       await Promise.all([carregarItens(), carregarProgresso()]);
 
     } catch (err) {
       beep(260);
       document.getElementById('errorMsg').textContent =
-        err.message || 'Não foi possível registrar sua doação. Tente novamente.';
+        err.message || 'Não foi possível registrar sua doação.';
       openModal('errorModal');
     } finally {
       setLoading(false);
     }
   });
 
+  /* ── Fechar modais ── */
   document.getElementById('btnSuccessClose').onclick = () => closeModal('successModal');
   document.getElementById('btnErrorClose').onclick   = () => closeModal('errorModal');
-  ['successModal','errorModal'].forEach(id => {
+
+  ['successModal', 'errorModal'].forEach(id => {
     document.getElementById(id).addEventListener('click', e => {
       if (e.target === e.currentTarget) closeModal(id);
     });
   });
 
+  /* ── Inicialização ── */
   carregarItens();
   carregarProgresso();
 </script>
