@@ -101,7 +101,6 @@
     }
 
     .hero__title em {
-      display: block;
       font-style: italic;
       color: var(--gold);
       font-weight: 400;
@@ -563,7 +562,7 @@
       <div class="hero__line"></div>
     </div>
     <h1 class="hero__title">
-      Cesta<br><em>Básica</em>
+      Cesta <em>Básica</em>
     </h1>
     <p class="hero__desc">
       Estamos arrecadando os alimentos listados abaixo para a composição das cestas básicas deste mês. Você pode contribuir com a quantidade que estiver ao seu alcance.
@@ -586,17 +585,16 @@
       <p class="progress-panel__caption" id="progressCaption">Carregando dados…</p>
     </div>
   </div>
-
-  <div class="form-panel">
+GIT
     <div class="form-panel__header">
       <div class="form-panel__icon">🌾</div>
-      <h2 class="form-panel__title">Registrar doação</h2>
+      <h2 class="form-panel__title">REGISTRAR DOAÇÃO</h2>
     </div>
     <div class="form-panel__body">
 
       <div class="notice">
         <div class="notice__dot"></div>
-        <span>Caso deseje doar outro item, repita o processo: informe seu nome, selecione o item, indique a quantidade e clique novamente em "Confirmar Doação".
+        <span>Se desejar doar mais de um item, após a primeira doação, repita todo o processo: informe seu nome, selecione o item, indique a quantidade e clique em “Confirmar doação”.
 </span>
       </div>
 
@@ -604,7 +602,7 @@
 
         <div class="field">
           <label class="field__label" for="nome">Seu nome</label>
-          <input class="field__input" type="text" id="nome" placeholder="Digite aqui seu nome"
+          <input class="field__input" type="text" id="nome" placeholder="Digite seu nome"
                  autocomplete="name" required />
           <span class="field__error" id="erroNome">Informe seu nome.</span>
         </div>
@@ -763,7 +761,7 @@
       document.getElementById('progressCaption').textContent =
         pct >= 100
           ? '🎉 Meta atingida! Obrigado a todos!'
-          : `${pct}% Progresso das doações de alimentos para cestas básicas`;
+          : `Progresso das doações de alimentos para cestas básicas`;
     } catch {
       document.getElementById('progressCaption').textContent =
         'Não foi possível carregar o progresso.';
