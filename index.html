@@ -122,7 +122,7 @@
       border: 1px solid rgba(201,169,110,.2);
       border-top: 2px solid var(--gold);
       font-family: 'Cormorant Garamond', serif;
-      font-size: 16px;
+      font-size: 19px;
       font-style: italic;
       color: var(--text-soft);
       line-height: 1.6;
@@ -538,17 +538,115 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
+    /* ── STEPS GUIDE ── */
+    .steps-guide {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      margin-bottom: 12px;
+      animation: fadeUp .7s .15s ease both;
+    }
+
+    .step-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      flex: 0 0 auto;
+    }
+
+    .step-item__num {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-muted);
+      transition: all .35s ease;
+    }
+
+    .step-item__label {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      transition: color .35s ease;
+      white-space: nowrap;
+    }
+
+    .step-item.active .step-item__num {
+      background: var(--gold-dim);
+      border-color: rgba(201,169,110,.35);
+      color: var(--gold);
+      box-shadow: 0 0 10px rgba(201,169,110,.12);
+    }
+
+    .step-item.active .step-item__label { color: var(--gold); }
+
+    .step-item.current .step-item__num {
+      background: rgba(201,169,110,.18);
+      border-color: rgba(201,169,110,.5);
+      color: var(--gold-light);
+      box-shadow: 0 0 14px rgba(201,169,110,.18);
+    }
+
+    .step-item.current .step-item__label { color: var(--text-soft); }
+
+    .step-arrow {
+      width: 28px;
+      height: 1px;
+      background: var(--border);
+      margin: 12px 4px 0;
+      flex-shrink: 0;
+    }
+
+    /* ── HELP BUTTON ── */
+    .btn-help {
+      margin-left: auto;
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color .2s, color .2s;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+
+    .btn-help:hover {
+      border-color: rgba(201,169,110,.4);
+      color: var(--gold);
+    }
+
     @media (max-width: 420px) {
-      .page { padding: 32px 16px 80px; }
-      .hero__title { font-size: 52px; }
-      .form-panel__body { padding: 20px 18px; }
+      .page { padding: 18px 16px 60px; }
+      .hero { padding: 4px 0 16px; }
+      .hero__title { font-size: 48px; }
+      .hero__desc { margin-top: 12px; font-size: 13px; }
+      .hero__verse { margin-top: 12px; padding: 12px 14px; font-size: 17px; }
+      .progress-wrap { margin-bottom: 10px; }
+      .progress-panel { padding: 14px 18px; }
+      .form-panel__body { padding: 18px 16px; }
+      .steps-guide { margin-bottom: 10px; }
       .modal__box { padding: 28px 22px; }
     }
 
     @media (max-width: 380px) {
-  .progress-panel__pct { font-size: 36px; }
-  .modal__box { padding: 24px 16px; }
-}
+      .progress-panel__pct { font-size: 36px; }
+      .modal__box { padding: 24px 16px; }
+    }
   </style>
 </head>
 <body>
@@ -577,7 +675,7 @@
     <div class="progress-panel">
       <div class="progress-panel__top">
         <span class="progress-panel__label">Progresso geral</span>
-        <span class="progress-panel__pct" id="pctLabel">—<span>%</span></span>
+        <span class="progress-panel__pct" id="pctLabel"></span>
       </div>
       <div class="track">
         <div class="track__fill" id="trackFill"></div>
@@ -585,17 +683,36 @@
       <p class="progress-panel__caption" id="progressCaption">Carregando dados…</p>
     </div>
   </div>
+
+  <div class="steps-guide">
+    <div class="step-item current" id="step1">
+      <div class="step-item__num">1</div>
+      <span class="step-item__label">Nome</span>
+    </div>
+    <div class="step-arrow"></div>
+    <div class="step-item" id="step2">
+      <div class="step-item__num">2</div>
+      <span class="step-item__label">Item</span>
+    </div>
+    <div class="step-arrow"></div>
+    <div class="step-item" id="step3">
+      <div class="step-item__num">3</div>
+      <span class="step-item__label">Qtd</span>
+    </div>
+    <div class="step-arrow"></div>
+    <div class="step-item" id="step4">
+      <div class="step-item__num">4</div>
+      <span class="step-item__label">Confirmar</span>
+    </div>
+  </div>
+
+  <div class="form-panel">
     <div class="form-panel__header">
       <div class="form-panel__icon">🌾</div>
-      <h2 class="form-panel__title">REGISTRAR DOAÇÃO</h2>
+      <h2 class="form-panel__title">Registrar Doação</h2>
+      <button class="btn-help" id="btnHelp" type="button" aria-label="Como funciona">?</button>
     </div>
     <div class="form-panel__body">
-
-      <div class="notice">
-        <div class="notice__dot"></div>
-        <span>Se desejar doar mais de um item, após a primeira doação, repita todo o processo: informe seu nome, selecione o item, indique a quantidade e clique em “Confirmar doação”.
-</span>
-      </div>
 
       <form id="donationForm" novalidate>
 
@@ -647,6 +764,15 @@
     <h3 class="modal__title modal__title--success">Doação registrada!</h3>
     <p class="modal__msg" id="successMsg"></p>
     <button class="btn-modal btn-modal--success" id="btnSuccessClose">Fechar</button>
+  </div>
+</div>
+
+<div class="modal" id="helpModal">
+  <div class="modal__box">
+    <span class="modal__glyph">💡</span>
+    <h3 class="modal__title modal__title--success">Como funciona</h3>
+    <p class="modal__msg">Preencha seu nome, escolha um item da lista e informe a quantidade que deseja contribuir. Para doar mais de um item, repita o processo após confirmar cada doação.</p>
+    <button class="btn-modal btn-modal--success" id="btnHelpClose">Entendi</button>
   </div>
 </div>
 
@@ -767,8 +893,30 @@
     }
   }
 
+  /* ── Indicador de etapas ── */
+  function updateSteps() {
+    const nome = document.getElementById('nome').value.trim();
+    const item = document.getElementById('item').value;
+    const qtd  = parseInt(document.getElementById('quantidade').value, 10);
+
+    const filled = [nome.length > 0, item !== '', qtd >= 1];
+    const allFilled = filled.every(Boolean);
+    const steps = document.querySelectorAll('.step-item');
+
+    steps.forEach((el, i) => {
+      if (i < 3) {
+        const prevFilled = i === 0 || filled.slice(0, i).every(Boolean);
+        el.classList.toggle('active',  filled[i]);
+        el.classList.toggle('current', !filled[i] && prevFilled);
+      } else {
+        el.classList.toggle('active',  allFilled);
+        el.classList.toggle('current', allFilled);
+      }
+    });
+  }
+
   /* ── Evento único de mudança no select de itens ── */
-  document.getElementById('item').addEventListener('change', atualizarBadge);
+  document.getElementById('item').addEventListener('change', () => { atualizarBadge(); updateSteps(); });
 
   /* ── Envio do formulário ── */
   document.getElementById('donationForm').addEventListener('submit', async function (e) {
@@ -811,6 +959,7 @@
 
       this.reset();
       document.getElementById('itemBadge').innerHTML = '';
+      updateSteps();
       await Promise.all([carregarItens(), carregarProgresso()]);
 
     } catch (err) {
@@ -826,14 +975,21 @@
   /* ── Fechar modais ── */
   document.getElementById('btnSuccessClose').onclick = () => closeModal('successModal');
   document.getElementById('btnErrorClose').onclick   = () => closeModal('errorModal');
+  document.getElementById('btnHelpClose').onclick    = () => closeModal('helpModal');
+  document.getElementById('btnHelp').onclick         = () => openModal('helpModal');
 
-  ['successModal', 'errorModal'].forEach(id => {
+  ['successModal', 'errorModal', 'helpModal'].forEach(id => {
     document.getElementById(id).addEventListener('click', e => {
       if (e.target === e.currentTarget) closeModal(id);
     });
   });
 
+  /* ── Listeners para atualizar steps em tempo real ── */
+  document.getElementById('nome').addEventListener('input', updateSteps);
+  document.getElementById('quantidade').addEventListener('input', updateSteps);
+
   /* ── Inicialização ── */
+  updateSteps();
   carregarItens();
   carregarProgresso();
 </script>
