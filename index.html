@@ -344,21 +344,6 @@
       margin-bottom: 8px;
     }
 
-    .field__badge {
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: .02em;
-      padding: 3px 10px;
-      border-radius: 100px;
-      background: var(--gold-dim);
-      color: var(--gold);
-      border: 1px solid rgba(201,169,110,.3);
-      box-shadow: 0 0 10px rgba(201,169,110,.1);
-      transition: all .3s ease;
-    }
-
-    .field__badge:empty { display: none; }
-
     .field__input,
     .field__select {
       width: 100%;
@@ -838,10 +823,7 @@
         </div>
 
         <div class="field">
-          <label class="field__label" for="item">
-            Item para doação
-            <span class="field__badge" id="itemBadge"></span>
-          </label>
+          <label class="field__label" for="item">Item para doação</label>
           <div id="itemSkeleton" class="skeleton"></div>
           <select class="field__select" id="item" required style="display:none">
             <option value="">Selecione um item…</option>
@@ -950,21 +932,17 @@
     document.querySelectorAll('.field__error').forEach(el => el.classList.remove('show'));
   }
 
-  /* ── Atualiza badge e limites do campo quantidade ── */
-  function atualizarBadge() {
-    const badge  = document.getElementById('itemBadge');
+  /* ── Limites do campo quantidade conforme o item selecionado ── */
+  function atualizarLimiteQuantidade() {
     const qtd    = document.getElementById('quantidade');
     const select = document.getElementById('item');
     const opt    = select.options[select.selectedIndex];
 
     if (opt && opt.dataset.restante) {
       const restante = opt.dataset.restante;
-      const unidade  = opt.dataset.unidade || 'un';
-      badge.innerHTML = `<span style="color:var(--gold);font-weight:700;">${restante} ${unidade} restante(s)</span>`;
       qtd.max         = restante;
       qtd.placeholder = `Até ${restante}`;
     } else {
-      badge.innerHTML = '';
       qtd.removeAttribute('max');
       qtd.placeholder = '1';
     }
@@ -993,8 +971,7 @@
         select.appendChild(o);
       });
 
-      // Garante que o badge reflita a seleção atual após recarregar
-      atualizarBadge();
+      atualizarLimiteQuantidade();
     } catch {
       select.innerHTML = '<option value="">Erro ao carregar lista</option>';
     } finally {
@@ -1045,7 +1022,7 @@
   }
 
   /* ── Evento único de mudança no select de itens ── */
-  document.getElementById('item').addEventListener('change', () => { atualizarBadge(); updateSteps(); });
+  document.getElementById('item').addEventListener('change', () => { atualizarLimiteQuantidade(); updateSteps(); });
 
   /* ── Envio do formulário ── */
   document.getElementById('donationForm').addEventListener('submit', async function (e) {
@@ -1087,7 +1064,6 @@
       openModal('successModal');
 
       this.reset();
-      document.getElementById('itemBadge').innerHTML = '';
       updateSteps();
       await Promise.all([carregarItens(), carregarProgresso()]);
 
