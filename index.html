@@ -54,6 +54,66 @@
       z-index: 0;
     }
 
+    /* ── Bloqueio inicial até a lista de itens carregar ── */
+    body.app-is-booting {
+      overflow: hidden;
+    }
+
+    .app-bootloader {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: var(--bg);
+      cursor: wait;
+    }
+
+    .app-bootloader::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 55% 40% at 15% 10%, rgba(74,155,111,.07) 0%, transparent 70%),
+        radial-gradient(ellipse 45% 35% at 85% 90%, rgba(201,169,110,.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .app-bootloader__inner {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 22px;
+      max-width: 320px;
+    }
+
+    .app-bootloader__spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(201, 169, 110, 0.22);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+      flex-shrink: 0;
+    }
+
+    .app-bootloader__text {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--text-soft);
+      letter-spacing: 0.03em;
+      text-align: center;
+      line-height: 1.55;
+    }
+
+    .app-bootloader[hidden] {
+      display: none !important;
+    }
+
     .page {
       position: relative;
       z-index: 1;
@@ -696,7 +756,14 @@
     }
   </style>
 </head>
-<body>
+<body class="app-is-booting">
+
+<div id="appBootloader" class="app-bootloader" role="status" aria-live="polite" aria-busy="true">
+  <div class="app-bootloader__inner">
+    <span class="app-bootloader__spinner" aria-hidden="true"></span>
+    <p class="app-bootloader__text">Carregando itens, por favor, aguarde...</p>
+  </div>
+</div>
 
 <div class="page">
 
@@ -836,6 +903,20 @@
   const API_URL = 'https://script.google.com/macros/s/AKfycbz_6cLHnLTtGAVTW_m8j7NGfyOdeGLGR1YkkIBjEaMSOKp1H_S-0bZJTFK4gBA9ct73/exec';
 
   let itemsCache = [];
+  let bootloaderEncerrado = false;
+
+  /* ── Libera a página após a primeira resposta da lista de itens ── */
+  function encerrarBootloaderInicial() {
+    if (bootloaderEncerrado) return;
+    bootloaderEncerrado = true;
+    const boot = document.getElementById('appBootloader');
+    if (boot) {
+      boot.hidden = true;
+      boot.removeAttribute('aria-busy');
+    }
+    document.body.classList.remove('app-is-booting');
+    updateSteps();
+  }
 
   /* ── Utilidades de áudio ── */
   function beep(freq = 880) {
@@ -906,7 +987,7 @@
       itemsCache.forEach(it => {
         const o       = document.createElement('option');
         o.value       = it.nome;
-        o.textContent = `${it.nome.toUpperCase()} (${it.unidade.toLowerCase()})`;
+        o.textContent = `${it.nome.toUpperCase()} (${it.unidade.toLowerCase()}) - ${it.restante} RESTANTE(S)`;
         o.dataset.restante = it.restante;
         o.dataset.unidade  = it.unidade;
         select.appendChild(o);
@@ -919,6 +1000,7 @@
     } finally {
       skeleton.style.display = 'none';
       select.style.display   = 'block';
+      encerrarBootloaderInicial();
     }
   }
 
