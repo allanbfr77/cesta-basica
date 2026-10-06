@@ -44,7 +44,7 @@
       font-family: 'Montserrat', sans-serif;
       color: var(--paper);
       min-height: 100vh;
-      min-height: 100dvh;
+      min-height: 100svh; /* não muda com a barra do navegador */
       display: flex;
       flex-direction: column;
       overflow-x: hidden;
@@ -57,7 +57,14 @@
     body::before {
       content: "";
       position: fixed;
-      inset: 0;
+      top: 0;
+      left: 0;
+      width: 100%;
+      /* Altura fixa, a maior da tela (com a barra do Safari recolhida). Se a
+         camada acompanhar a barra, a foto é redimensionada cada vez que a barra
+         aparece ou some: é o "engasgo" ao trocar a direção da rolagem no iPhone. */
+      height: 100vh;
+      height: 100lvh;
       z-index: -1;
       pointer-events: none;
       transform: translateZ(0);
