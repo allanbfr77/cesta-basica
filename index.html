@@ -3,61 +3,75 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cesta Básica · INVB</title>
+  <meta name="theme-color" content="#0B0B0C" />
+  <title>INVB - Cesta Básica</title>
+  <!-- Cesta Básica · interface v1.2.0 -->
+  <link rel="icon" type="image/png" href="icone.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
   <style>
+    /*
+     * Mesma linguagem do site da igreja (invbotafogo.com.br): foto de fundo
+     * escurecida, painéis de vidro escuro com cantos de 14px, fio e selo
+     * dourados, botões em pílula e Montserrat.
+     *
+     * A logo (logo.png), a foto de fundo (fundo.webp) e o ícone da aba
+     * (icone.png) ficam na raiz do repositório, ao lado deste index.html.
+     */
     :root {
-      --bg:           #0d0f0e;
-      --surface:      #141716;
-      --surface-2:    #1c1f1d;
-      --border:       rgba(255,255,255,.07);
-      --border-hover: rgba(255,255,255,.14);
-      --gold:         #c9a96e;
-      --gold-light:   #e2c99a;
-      --gold-dim:     rgba(201,169,110,.12);
-      --green:        #4a9b6f;
-      --green-bright: #5cb87f;
-      --green-dim:    rgba(74,155,111,.15);
-      --text:         #f0ede8;
-      --text-muted:   #7a8078;
-      --text-soft:    #b5b8b2;
-      --danger:       #c0614a;
-      --danger-dim:   rgba(192,97,74,.12);
-      --radius:       14px;
-      --radius-lg:    22px;
-      --radius-xl:    32px;
+      color-scheme: dark;
+      --ink: #0B0B0C;
+      --paper: #F6F5F1;
+      --dim: rgba(246, 245, 241, .62);
+      --gold: #E6B23E;
+      --gold-hi: #F6D27A;
+      --line: rgba(230, 178, 62, .26);
+      --glass: rgba(20, 20, 22, .55);
+      --fio: rgba(255, 255, 255, .08);
+      --campo: rgba(246, 245, 241, .06);
+      --campo-borda: rgba(246, 245, 241, .2);
+      --vermelho: #fca5a5;
+      --fundo: #14110e;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; background-color: var(--fundo); }
 
     body {
-      font-family: 'Outfit', sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      font-family: 'Montserrat', sans-serif;
+      color: var(--paper);
       min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
+    /* A foto do site, escurecida a 70%, numa camada fixa própria —
+       `background-attachment: fixed` não funciona no celular. */
     body::before {
-      content: '';
+      content: "";
       position: fixed;
       inset: 0;
-      background:
-        radial-gradient(ellipse 55% 40% at 15% 10%, rgba(74,155,111,.07) 0%, transparent 70%),
-        radial-gradient(ellipse 45% 35% at 85% 90%, rgba(201,169,110,.06) 0%, transparent 70%);
+      z-index: -1;
       pointer-events: none;
-      z-index: 0;
+      transform: translateZ(0);
+      background-color: var(--fundo);
+      background-image:
+        linear-gradient(rgba(0, 0, 0, .7), rgba(0, 0, 0, .7)),
+        url('fundo.webp');
+      background-repeat: no-repeat, no-repeat;
+      background-position: center, center;
+      background-size: 100% 100%, cover;
     }
 
     /* ── Bloqueio inicial até a lista de itens carregar ── */
-    body.app-is-booting {
-      overflow: hidden;
-    }
+    body.app-is-booting { overflow: hidden; }
 
     .app-bootloader {
       position: fixed;
@@ -67,22 +81,11 @@
       align-items: center;
       justify-content: center;
       padding: 24px;
-      background: var(--bg);
+      background: var(--fundo);
       cursor: wait;
     }
 
-    .app-bootloader::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 55% 40% at 15% 10%, rgba(74,155,111,.07) 0%, transparent 70%),
-        radial-gradient(ellipse 45% 35% at 85% 90%, rgba(201,169,110,.06) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
     .app-bootloader__inner {
-      position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -90,654 +93,611 @@
       max-width: 320px;
     }
 
+    .app-bootloader__logo {
+      display: block;
+      width: auto;
+      height: 56px;
+      margin-bottom: 6px;
+      filter: brightness(0) invert(1);
+    }
+
     .app-bootloader__spinner {
       width: 40px;
       height: 40px;
-      border: 3px solid rgba(201, 169, 110, 0.22);
+      border: 3px solid rgba(246, 245, 241, .15);
       border-top-color: var(--gold);
       border-radius: 50%;
-      animation: spin 0.75s linear infinite;
+      animation: spin .75s linear infinite;
       flex-shrink: 0;
     }
 
     .app-bootloader__text {
-      margin: 0;
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 500;
-      color: var(--text-soft);
-      letter-spacing: 0.03em;
+      color: var(--dim);
       text-align: center;
       line-height: 1.55;
     }
 
-    .app-bootloader[hidden] {
-      display: none !important;
-    }
+    .app-bootloader[hidden] { display: none !important; }
 
-    .page {
-      position: relative;
-      z-index: 1;
-      max-width: 520px;
-      margin: 0 auto;
-      padding: 48px 20px 96px;
-    }
-
-    /* ── HERO ── */
-    .hero {
-      padding: 12px 0 44px;
-      animation: fadeUp .7s ease both;
-      text-align: center;
-    }
-
-    .hero__eyebrow {
+    /* ── Topo ── */
+    .topo {
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 28px;
+      height: 70px;
+      padding: 0 7.5%;
+      background-color: rgba(11, 11, 12, .95);
+      border-bottom: 1px solid var(--line);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .35);
     }
 
-    .hero__line {
-      flex: 1;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
-      opacity: .35;
+    .topo a { display: flex; align-items: center; }
+
+    .topo img {
+      display: block;
+      width: auto;
+      height: 56px;
+      filter: brightness(0) invert(1);
+      transition: opacity .2s ease;
     }
 
-    .hero__label {
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: .22em;
+    .topo a:hover img { opacity: .85; }
+
+    .topo a:focus-visible {
+      outline: 2px solid var(--gold-hi);
+      outline-offset: 4px;
+      border-radius: 4px;
+    }
+
+    /* ── Página ── */
+    /* No celular, uma coluna só: abertura, progresso, etapas e formulário.
+       No computador, duas (ver o @media mais abaixo). */
+    .page {
+      flex: 1 0 auto;
+      width: 100%;
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: clamp(28px, 5vw, 56px) clamp(16px, 4vw, 28px) clamp(40px, 7vw, 72px);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* ── Abertura ── */
+    .hero { padding: 4px 0 8px; }
+
+    .kicker {
+      display: block;
+      font-size: 12px;
+      letter-spacing: 3px;
       text-transform: uppercase;
       color: var(--gold);
     }
 
     .hero__title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(52px, 13vw, 72px);
+      margin-top: 14px;
+      font-size: clamp(2.1rem, 5.4vw, 3.4rem);
       font-weight: 700;
-      line-height: .92;
-      letter-spacing: -.02em;
-      color: var(--text);
-    }
-
-    .hero__title em {
-      font-style: italic;
-      color: var(--gold);
-      font-weight: 400;
+      line-height: 1.1;
     }
 
     .hero__desc {
-      margin-top: 28px;
-      font-size: 14px;
-      font-weight: 300;
-      color: var(--text-muted);
-      line-height: 1.8;
-      max-width: 360px;
-      margin-inline: auto;
+      max-width: 480px;
+      margin-top: 16px;
+      font-size: clamp(1rem, 2.4vw, 1.1rem);
+      line-height: 1.7;
+      color: var(--dim);
     }
 
+    /* O versículo, como no Contato do site: fio dourado em cima. */
     .hero__verse {
-      margin-top: 32px;
-      padding: 24px 28px;
-      border: 1px solid rgba(201,169,110,.2);
-      border-top: 2px solid var(--gold);
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 21px;
-      font-style: italic;
-      color: var(--text-soft);
-      line-height: 1.65;
-      background: var(--gold-dim);
-      border-radius: var(--radius);
-      text-align: center;
+      max-width: 480px;
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
     }
 
-    .hero__verse cite {
-      display: block;
-      margin-top: 14px;
-      font-size: 12px;
-      font-style: normal;
-      font-family: 'Outfit', sans-serif;
+    .hero__verse blockquote {
+      font-size: 15px;
+      line-height: 1.7;
+      color: rgba(246, 245, 241, .78);
+    }
+
+    .hero__verse figcaption {
+      margin-top: 10px;
+      font-size: 14px;
       font-weight: 600;
       color: var(--gold);
-      letter-spacing: .1em;
-      text-transform: uppercase;
     }
 
-    /* ── PROGRESS ── */
-    .progress-wrap {
-      margin-bottom: 16px;
-      animation: fadeUp .7s .1s ease both;
-    }
-
+    /* ── Progresso ── */
+    /* O cartão de destaque do site: fio e fundo dourados, número grande. */
     .progress-panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 14px 20px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .progress-panel::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
-      opacity: .3;
+      padding: 20px 24px 22px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(230, 178, 62, .08);
     }
 
     .progress-panel__top {
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
-      margin-bottom: 10px;
+      gap: 16px;
+      margin-bottom: 14px;
     }
 
-    .progress-panel__label {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: .14em;
-      text-transform: uppercase;
-      color: rgba(201,169,110,.55);
-    }
+    .progress-panel__label { font-size: 14px; color: var(--dim); }
 
     .progress-panel__pct {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 36px;
-      font-weight: 700;
-      color: var(--gold);
-      line-height: 1;
-      letter-spacing: -.03em;
+      font-size: clamp(40px, 5vw, 56px);
+      font-weight: 600;
+      line-height: .95;
+      letter-spacing: -2px;
+      color: var(--gold-hi);
+      font-variant-numeric: tabular-nums;
     }
 
     .progress-panel__pct span {
-      font-size: 16px;
-      opacity: .5;
+      margin-left: 2px;
+      font-size: .45em;
+      font-weight: 500;
+      letter-spacing: 0;
+      color: var(--paper);
     }
 
     .track {
       width: 100%;
-      height: 3px;
-      background: rgba(255,255,255,.05);
-      border-radius: 100px;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(246, 245, 241, .1);
       overflow: hidden;
     }
 
     .track__fill {
-      height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, var(--green), var(--gold));
-      border-radius: 100px;
-      transition: width 1.4s cubic-bezier(.4,0,.2,1);
-      position: relative;
-    }
-
-    .track__fill::after {
-      content: '';
-      position: absolute;
-      right: -1px; top: 50%;
-      transform: translateY(-50%);
-      width: 7px; height: 7px;
-      background: var(--gold-light);
-      border-radius: 50%;
-      box-shadow: 0 0 10px var(--gold);
+      height: 100%;
+      border-radius: 999px;
+      background: var(--gold);
+      transition: width 1.4s cubic-bezier(.4, 0, .2, 1);
     }
 
     .progress-panel__caption {
-      margin-top: 7px;
-      font-size: 11px;
-      color: var(--text-muted);
-      font-weight: 300;
+      margin-top: 10px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--dim);
     }
 
-    /* ── FORM PANEL ── */
+    /* ── Etapas: nome, item, quantidade, confirmar ── */
+    .steps-guide {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 4px 0;
+    }
+
+    .step-item {
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .step-item__num {
+      width: 30px;
+      height: 30px;
+      border: 1px solid rgba(246, 245, 241, .22);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--dim);
+      transition: background-color .3s ease, border-color .3s ease, color .3s ease;
+    }
+
+    .step-item__label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--dim);
+      white-space: nowrap;
+      transition: color .3s ease;
+    }
+
+    /* A etapa da vez: contorno dourado. */
+    .step-item.current .step-item__num {
+      border-color: var(--gold);
+      background: rgba(230, 178, 62, .12);
+      color: var(--gold-hi);
+    }
+
+    .step-item.current .step-item__label { color: var(--paper); }
+
+    /* Etapa feita: dourada e cheia. */
+    .step-item.active .step-item__num {
+      border-color: var(--gold);
+      background: var(--gold);
+      color: var(--ink);
+    }
+
+    .step-item.active .step-item__label { color: var(--gold-hi); }
+
+    .step-arrow {
+      flex-shrink: 0;
+      width: 36px;
+      height: 1px;
+      margin: 15px 6px 0;
+      background: rgba(246, 245, 241, .15);
+    }
+
+    /* ── Formulário ── */
     .form-panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      animation: fadeUp .7s .2s ease both;
+      border: 1px solid rgba(255, 255, 255, .06);
+      border-radius: 14px;
+      background: var(--glass);
     }
 
     .form-panel__header {
-      padding: 20px 26px;
-      border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--fio);
     }
 
     .form-panel__icon {
-      width: 36px; height: 36px;
+      flex: none;
+      width: 40px;
+      height: 40px;
       border-radius: 10px;
-      background: var(--green-dim);
-      border: 1px solid rgba(74,155,111,.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      background: rgba(230, 178, 62, .12);
+      color: var(--gold);
+      font-size: 17px;
     }
 
     .form-panel__title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 22px;
+      font-size: 17px;
       font-weight: 600;
-      color: var(--text);
+      line-height: 1.3;
     }
 
-    .form-panel__body { padding: 26px; }
+    .btn-help {
+      flex: none;
+      margin-left: auto;
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(230, 178, 62, .55);
+      border-radius: 50%;
+      background: none;
+      color: var(--gold-hi);
+      font: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1;
+      cursor: pointer;
+      transition: background-color .2s ease, color .2s ease;
+    }
 
-    /* ── FIELD ── */
+    .btn-help:focus-visible {
+      outline: 2px solid var(--gold-hi);
+      outline-offset: 3px;
+    }
+
+    .form-panel__body { padding: 24px; }
+
     .field { margin-bottom: 18px; }
 
     .field__label {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: .14em;
-      text-transform: uppercase;
-      color: rgba(201,169,110,.55);
+      display: block;
       margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(246, 245, 241, .86);
     }
 
+    /* 16px evita o zoom automático do iPhone ao tocar no campo. */
     .field__input,
     .field__select {
       width: 100%;
-      padding: 13px 16px;
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      font-family: 'Outfit', sans-serif;
-      font-size: 15px;
-      font-weight: 400;
-      color: var(--text);
-      transition: border-color .2s, box-shadow .2s, background .2s;
+      padding: 13px 15px;
+      border: 1px solid var(--campo-borda);
+      border-radius: 10px;
+      background-color: var(--campo);
+      color: var(--paper);
+      font: inherit;
+      font-size: 16px;
+      font-weight: 500;
       appearance: none;
       -webkit-appearance: none;
       outline: none;
+      transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease;
     }
 
-    .field__input::placeholder { color: var(--text-muted); font-weight: 300; }
+    .field__input::placeholder { color: rgba(246, 245, 241, .4); font-weight: 400; }
 
     .field__input:focus,
     .field__select:focus {
-      border-color: rgba(201,169,110,.35);
-      background: #1e211f;
-      box-shadow: 0 0 0 3px rgba(201,169,110,.06);
+      border-color: var(--gold);
+      background-color: rgba(246, 245, 241, .08);
+      box-shadow: 0 0 0 3px rgba(230, 178, 62, .25);
+    }
+
+    /* Preenchimento automático do navegador: sem isto o campo fica claro. */
+    .field__input:-webkit-autofill {
+      -webkit-text-fill-color: var(--paper);
+      -webkit-box-shadow: 0 0 0 1000px #221d17 inset;
+      caret-color: var(--paper);
+      transition: background-color 9999s ease-out 0s;
     }
 
     .field__select {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237a8078' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      padding-right: 44px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23E6B23E' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
-      background-position: right 14px center;
-      padding-right: 40px;
+      background-position: right 16px center;
       cursor: pointer;
     }
 
-    .field__select option { background: #1c1f1d; color: var(--text); }
-    .field__select:disabled { opacity: .4; cursor: not-allowed; }
+    .field__select option { background: #1b1813; color: var(--paper); }
+    .field__select:disabled { opacity: .5; cursor: not-allowed; }
 
     .field__error {
       display: none;
       margin-top: 6px;
-      font-size: 11px;
+      font-size: 13px;
       font-weight: 500;
-      color: var(--danger);
-      letter-spacing: .03em;
+      color: var(--vermelho);
     }
+
     .field__error.show { display: block; }
 
-    /* ── SKELETON ── */
+    /* Enquanto a lista de itens não chega. */
     .skeleton {
-      height: 48px;
-      border-radius: var(--radius);
-      background: linear-gradient(90deg, var(--surface-2) 25%, #222624 50%, var(--surface-2) 75%);
+      height: 50px;
+      border-radius: 10px;
+      background: linear-gradient(90deg, rgba(246, 245, 241, .05) 25%, rgba(246, 245, 241, .11) 50%, rgba(246, 245, 241, .05) 75%);
       background-size: 200% 100%;
       animation: shimmer 1.6s infinite;
     }
+
     @keyframes shimmer {
       0%   { background-position: 200% 0; }
       100% { background-position: -200% 0; }
     }
 
-    .sep { height: 1px; background: var(--border); margin: 22px 0; }
+    .sep { height: 1px; margin: 22px 0; background: var(--fio); }
 
-    /* ── NOTICE ── */
-    .notice {
-      display: flex;
-      gap: 10px;
-      padding: 12px 14px;
-      background: rgba(255,255,255,.025);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      font-size: 12px;
-      font-weight: 300;
-      color: var(--text-muted);
-      line-height: 1.65;
-      margin-bottom: 22px;
-    }
-    .notice__dot {
-      flex-shrink: 0;
-      width: 5px; height: 5px;
-      background: var(--gold);
-      border-radius: 50%;
-      margin-top: 6px;
-      opacity: .6;
-    }
-
-    /* ── BUTTON ── */
     .btn-submit {
       width: 100%;
-      padding: 15px 20px;
+      min-height: 54px;
+      border: 0;
+      border-radius: 999px;
       background: var(--gold);
-      color: #0d0f0e;
-      font-family: 'Outfit', sans-serif;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: .14em;
-      text-transform: uppercase;
-      border: none;
-      border-radius: var(--radius);
+      color: var(--ink);
+      font: inherit;
+      font-size: 16px;
+      font-weight: 600;
       cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      transition: background .25s, transform .2s, box-shadow .25s;
+      transition: background-color .2s ease, color .2s ease;
     }
 
-    .btn-submit::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(255,255,255,.18), transparent 55%);
+    .btn-submit:focus-visible {
+      outline: 2px solid var(--gold-hi);
+      outline-offset: 3px;
     }
-
-    .btn-submit:hover:not(:disabled) {
-      background: var(--gold-light);
-      transform: translateY(-1px);
-      box-shadow: 0 8px 28px rgba(201,169,110,.22);
-    }
-
-    .btn-submit:active:not(:disabled) { transform: translateY(0); box-shadow: none; }
 
     .btn-submit:disabled {
-      background: #252825;
-      color: var(--text-muted);
+      background: rgba(246, 245, 241, .1);
+      color: var(--dim);
       cursor: not-allowed;
-      transform: none;
+    }
+
+    .btn-submit.is-loading {
+      background: var(--gold);
+      color: var(--ink);
+      cursor: progress;
     }
 
     .btn-submit__inner {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      position: relative;
+      gap: 10px;
     }
 
     .spinner {
       display: none;
-      width: 13px; height: 13px;
-      border: 2px solid rgba(0,0,0,.2);
-      border-top-color: #0d0f0e;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(11, 11, 12, .25);
+      border-top-color: var(--ink);
       border-radius: 50%;
       animation: spin .65s linear infinite;
     }
+
     @keyframes spin { to { transform: rotate(360deg); } }
     .btn-submit.is-loading .spinner { display: block; }
-    .btn-submit.is-loading .btn-label { opacity: .5; }
+    .btn-submit.is-loading .btn-label { opacity: .6; }
 
-    /* ── MODAL ── */
+    @media (hover: hover) {
+      .btn-submit:not(:disabled):hover { background: var(--gold-hi); }
+      .btn-help:hover { background: var(--gold); color: var(--ink); }
+    }
+
+    /* ── Janelas ── */
+    /* No celular sobem de baixo, como uma gaveta; no computador, no meio. */
     .modal {
       display: none;
       position: fixed;
       inset: 0;
       z-index: 9000;
-      align-items: center;
+      align-items: flex-end;
       justify-content: center;
-      padding: 20px;
-      background: rgba(0,0,0,.75);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      background: rgba(0, 0, 0, .7);
+      -webkit-backdrop-filter: blur(4px);
+      backdrop-filter: blur(4px);
     }
+
     .modal.open { display: flex; animation: fadeIn .2s ease; }
+
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { transform: translateY(60px); opacity: 0; } to { transform: none; opacity: 1; } }
 
     .modal__box {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: 38px 32px;
-      max-width: 380px;
       width: 100%;
+      padding: 26px 24px max(28px, env(safe-area-inset-bottom));
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-bottom: 0;
+      border-radius: 20px 20px 0 0;
+      background: #17140f;
+      box-shadow: 0 -12px 40px rgba(0, 0, 0, .5);
       text-align: center;
-      position: relative;
-      overflow: hidden;
-      animation: popIn .3s cubic-bezier(.34,1.56,.64,1) both;
+      animation: slideUp .25s ease;
     }
 
-    @keyframes popIn {
-      from { opacity: 0; transform: scale(.88) translateY(16px); }
-      to   { opacity: 1; transform: scale(1) translateY(0); }
-    }
-
+    /* A alça da gaveta. */
     .modal__box::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      content: "";
+      display: block;
+      width: 40px;
+      height: 4px;
+      margin: 0 auto 22px;
+      border-radius: 2px;
+      background: rgba(246, 245, 241, .2);
     }
 
-    .modal__glyph { font-size: 48px; display: block; margin-bottom: 18px; }
+    .modal__glyph {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 16px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: rgba(230, 178, 62, .12);
+      color: var(--gold);
+      font-size: 26px;
+    }
+
+    #errorModal .modal__glyph { background: rgba(252, 165, 165, .12); color: var(--vermelho); }
 
     .modal__title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 28px;
+      margin-bottom: 8px;
+      font-size: 20px;
       font-weight: 700;
-      margin-bottom: 12px;
-      letter-spacing: -.02em;
     }
 
-    .modal__title--success { color: var(--gold); }
-    .modal__title--error   { color: var(--danger); }
+    .modal__title--error { color: var(--vermelho); }
 
     .modal__msg {
-      font-size: 14px;
-      font-weight: 300;
-      color: var(--text-soft);
-      line-height: 1.7;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--dim);
     }
+
+    .modal__msg strong { color: var(--paper); font-weight: 600; }
 
     .btn-modal {
-      padding: 12px 30px;
-      border-radius: var(--radius);
-      font-family: 'Outfit', sans-serif;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      cursor: pointer;
-      border: none;
-      transition: transform .2s, opacity .2s;
-    }
-    .btn-modal:hover { transform: translateY(-1px); opacity: .9; }
-    .btn-modal--success { background: var(--gold); color: #0d0f0e; }
-    .btn-modal--error   { background: var(--danger-dim); color: var(--danger); border: 1px solid rgba(192,97,74,.25); }
-
-    .footer {
-      text-align: center;
-      margin-top: 40px;
-      font-size: 10px;
-      letter-spacing: .16em;
-      text-transform: uppercase;
-      color: #262a27;
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ── STEPS GUIDE ── */
-    .steps-guide {
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      margin-bottom: 12px;
-      animation: fadeUp .7s .15s ease both;
-    }
-
-    .step-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 5px;
-      flex: 0 0 auto;
-    }
-
-    .step-item__num {
-      width: 26px; height: 26px;
-      border-radius: 50%;
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      font-weight: 700;
-      color: var(--text-muted);
-      transition: all .35s ease;
-    }
-
-    .step-item__label {
-      font-size: 9px;
+      width: 100%;
+      min-height: 50px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      font: inherit;
+      font-size: 16px;
       font-weight: 600;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      transition: color .35s ease;
-      white-space: nowrap;
-    }
-
-    .step-item.active .step-item__num {
-      background: var(--gold-dim);
-      border-color: rgba(201,169,110,.35);
-      color: var(--gold);
-      box-shadow: 0 0 10px rgba(201,169,110,.12);
-    }
-
-    .step-item.active .step-item__label { color: var(--gold); }
-
-    .step-item.current .step-item__num {
-      background: rgba(201,169,110,.18);
-      border-color: rgba(201,169,110,.5);
-      color: var(--gold-light);
-      box-shadow: 0 0 14px rgba(201,169,110,.18);
-    }
-
-    .step-item.current .step-item__label { color: var(--text-soft); }
-
-    .step-arrow {
-      width: 28px;
-      height: 1px;
-      background: var(--border);
-      margin: 12px 4px 0;
-      flex-shrink: 0;
-    }
-
-    /* ── HELP BUTTON ── */
-    .btn-help {
-      margin-left: auto;
-      width: 28px; height: 28px;
-      border-radius: 50%;
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      font-family: 'Outfit', sans-serif;
-      font-size: 13px;
-      font-weight: 700;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: border-color .2s, color .2s;
-      flex-shrink: 0;
-      line-height: 1;
+      transition: background-color .2s ease;
     }
 
-    .btn-help:hover {
-      border-color: rgba(201,169,110,.4);
-      color: var(--gold);
+    .btn-modal:focus-visible {
+      outline: 2px solid var(--gold-hi);
+      outline-offset: 3px;
     }
 
-    @media (max-width: 420px) {
-      .page { padding: 18px 16px 60px; }
-      .hero { padding: 4px 0 16px; }
-      .hero__title { font-size: 48px; }
-      .hero__desc { margin-top: 12px; font-size: 13px; }
-      .hero__verse { margin-top: 18px; padding: 18px 18px; font-size: 18px; }
-      .progress-wrap { margin-bottom: 10px; }
-      .progress-panel { padding: 12px 16px; }
-      .form-panel__body { padding: 18px 16px; }
-      .steps-guide { margin-bottom: 10px; }
-      .modal__box { padding: 28px 22px; }
+    .btn-modal--success { background: var(--gold); color: var(--ink); }
+
+    .btn-modal--error {
+      border-color: rgba(252, 165, 165, .5);
+      background: none;
+      color: var(--vermelho);
     }
 
-    @media (max-width: 380px) {
-      .progress-panel__pct { font-size: 36px; }
-      .modal__box { padding: 24px 16px; }
+    @media (hover: hover) {
+      .btn-modal--success:hover { background: var(--gold-hi); }
+      .btn-modal--error:hover { background: rgba(252, 165, 165, .1); }
     }
 
-    /* ── LAYOUT DUAS COLUNAS (desktop) ── */
-    @media (min-width: 1024px) {
+    /* ── Rodapé ── */
+    .rodape {
+      padding: 22px 16px;
+      border-top: 1px solid var(--fio);
+      background: rgba(11, 11, 12, .6);
+      text-align: center;
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--dim);
+    }
+
+    .rodape a { color: var(--gold-hi); text-decoration: none; }
+    .rodape a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+    /* ── Telas maiores ── */
+    @media (min-width: 480px) {
+      .modal { align-items: center; padding: 24px; }
+
+      .modal__box {
+        max-width: 400px;
+        padding-bottom: 28px;
+        border-bottom: 1px solid rgba(255, 255, 255, .1);
+        border-radius: 16px;
+      }
+
+      .modal__box::before { display: none; }
+    }
+
+    /* Computador: abertura e versículo à esquerda, acompanhando a rolagem;
+       progresso, etapas e formulário à direita. */
+    @media (min-width: 960px) {
       .page {
-        max-width: 1120px;
-        padding: 64px 56px 80px;
         display: grid;
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-        grid-template-rows: auto auto auto auto;
-        column-gap: 64px;
+        grid-template-rows: auto auto auto 1fr;
+        gap: 16px 56px;
         align-items: start;
       }
 
-      /* Coluna esquerda: hero ocupa todas as linhas e fica sticky */
       .hero {
         grid-column: 1;
         grid-row: 1 / 5;
-        text-align: left;
-        padding: 0 0 32px;
         position: sticky;
-        top: 64px;
-        width: 100%;
+        top: 32px;
       }
 
-      .hero__eyebrow { justify-content: flex-start; }
-      .hero__eyebrow .hero__line:first-child { display: none; }
+      .progress-wrap { grid-column: 2; grid-row: 1; }
+      .steps-guide   { grid-column: 2; grid-row: 2; }
+      .form-panel    { grid-column: 2; grid-row: 3; }
+    }
 
-      .hero__title { font-size: clamp(56px, 5vw, 80px); }
+    /* Celular: abertura centralizada, como nas páginas do site. */
+    @media (max-width: 560px) {
+      .topo { justify-content: center; padding: 0 16px; }
+      .topo img { height: 48px; }
+      .hero { text-align: center; }
+      .hero__desc, .hero__verse { margin-left: auto; margin-right: auto; }
+      .form-panel__header, .form-panel__body { padding-left: 18px; padding-right: 18px; }
+      .progress-panel { padding: 18px; }
+    }
 
-      .hero__desc {
-        margin-inline: 0;
-        max-width: 100%;
-      }
-
-      .hero__verse { text-align: left; width: 100%; }
-
-      /* Coluna direita: progresso, steps e formulário empilhados */
-      .progress-wrap { grid-column: 2; grid-row: 1; width: 100%; }
-      .steps-guide   { grid-column: 2; grid-row: 2; width: 100%; }
-      .form-panel    { grid-column: 2; grid-row: 3; width: 100%; }
-
-      .footer {
-        grid-column: 1 / -1;
-        grid-row: 4;
-        margin-top: 24px;
-      }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .modal.open, .modal__box { animation: none; }
+      .track__fill { transition: none; }
+      .skeleton { animation: none; }
     }
   </style>
 </head>
@@ -745,30 +705,31 @@
 
 <div id="appBootloader" class="app-bootloader" role="status" aria-live="polite" aria-busy="true">
   <div class="app-bootloader__inner">
+    <img class="app-bootloader__logo" src="logo.png" alt="" />
     <span class="app-bootloader__spinner" aria-hidden="true"></span>
     <p class="app-bootloader__text">Carregando itens, por favor, aguarde...</p>
   </div>
 </div>
 
-<div class="page">
+<header class="topo">
+  <a href="https://invbotafogo.com.br" aria-label="Igreja de Nova Vida em Botafogo — ir para o site">
+    <img src="logo.png" alt="Nova Vida Botafogo" />
+  </a>
+</header>
 
-  <header class="hero">
-    <div class="hero__eyebrow">
-      <div class="hero__line"></div>
-      <span class="hero__label">INVB · Arrecadação</span>
-      <div class="hero__line"></div>
-    </div>
-    <h1 class="hero__title">
-      Cesta <em>Básica</em>
-    </h1>
+<main class="page">
+
+  <section class="hero">
+    <span class="kicker">Arrecadação</span>
+    <h1 class="hero__title">Cesta básica</h1>
     <p class="hero__desc">
       Estamos arrecadando os alimentos listados abaixo para a composição das cestas básicas deste mês. Você pode contribuir com a quantidade que estiver ao seu alcance.
     </p>
-    <blockquote class="hero__verse">
-      "Por isso, enquanto tivermos oportunidade, façamos o bem a todos, mas principalmente aos da família da fé." 
-      <cite>Gl.6:10</cite>
-    </blockquote>
-  </header>
+    <figure class="hero__verse">
+      <blockquote>"Por isso, enquanto tivermos oportunidade, façamos o bem a todos, mas principalmente aos da família da fé."</blockquote>
+      <figcaption>Gl.6:10</figcaption>
+    </figure>
+  </section>
 
   <div class="progress-wrap">
     <div class="progress-panel">
@@ -807,8 +768,8 @@
 
   <div class="form-panel">
     <div class="form-panel__header">
-      <div class="form-panel__icon">🌾</div>
-      <h2 class="form-panel__title">Registrar Doação</h2>
+      <div class="form-panel__icon"><i class="fa-solid fa-wheat-awn" aria-hidden="true"></i></div>
+      <h2 class="form-panel__title">Registrar doação</h2>
       <button class="btn-help" id="btnHelp" type="button" aria-label="Como funciona">?</button>
     </div>
     <div class="form-panel__body">
@@ -843,7 +804,7 @@
         <button type="submit" class="btn-submit" id="btnEnviar">
           <span class="btn-submit__inner">
             <span class="spinner"></span>
-            <span class="btn-label">Confirmar Doação</span>
+            <span class="btn-label">Confirmar doação</span>
           </span>
         </button>
 
@@ -851,31 +812,35 @@
     </div>
   </div>
 
-  <p class="footer">v1.2.0 &nbsp;·&nbsp; INVB &nbsp;·&nbsp; Cesta Básica</p>
-</div>
+</main>
+
+<footer class="rodape">
+  <p>© <span id="ano">2026</span> Igreja de Nova Vida em Botafogo</p>
+  <p><a href="https://invbotafogo.com.br">invbotafogo.com.br</a></p>
+</footer>
 
 <div class="modal" id="successModal">
-  <div class="modal__box">
-    <span class="modal__glyph">🙏</span>
-    <h3 class="modal__title modal__title--success">Doação registrada!</h3>
+  <div class="modal__box" role="dialog" aria-modal="true" aria-labelledby="successTitle">
+    <div class="modal__glyph"><i class="fa-solid fa-hands-praying" aria-hidden="true"></i></div>
+    <h3 class="modal__title modal__title--success" id="successTitle">Doação registrada!</h3>
     <p class="modal__msg" id="successMsg"></p>
     <button class="btn-modal btn-modal--success" id="btnSuccessClose">Fechar</button>
   </div>
 </div>
 
 <div class="modal" id="helpModal">
-  <div class="modal__box">
-    <span class="modal__glyph">💡</span>
-    <h3 class="modal__title modal__title--success">Como funciona</h3>
+  <div class="modal__box" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+    <div class="modal__glyph"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i></div>
+    <h3 class="modal__title modal__title--success" id="helpTitle">Como funciona</h3>
     <p class="modal__msg">Preencha seu nome, escolha um item da lista e informe a quantidade que deseja contribuir. Para doar mais de um item, repita o processo após confirmar cada doação.</p>
     <button class="btn-modal btn-modal--success" id="btnHelpClose">Entendi</button>
   </div>
 </div>
 
 <div class="modal" id="errorModal">
-  <div class="modal__box">
-    <span class="modal__glyph">⚠️</span>
-    <h3 class="modal__title modal__title--error">Algo deu errado</h3>
+  <div class="modal__box" role="dialog" aria-modal="true" aria-labelledby="errorTitle">
+    <div class="modal__glyph"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i></div>
+    <h3 class="modal__title modal__title--error" id="errorTitle">Algo deu errado</h3>
     <p class="modal__msg" id="errorMsg"></p>
     <button class="btn-modal btn-modal--error" id="btnErrorClose">Tentar novamente</button>
   </div>
@@ -924,7 +889,7 @@
     const btn = document.getElementById('btnEnviar');
     btn.classList.toggle('is-loading', on);
     btn.disabled = on;
-    btn.querySelector('.btn-label').textContent = on ? 'Enviando…' : 'Confirmar Doação';
+    btn.querySelector('.btn-label').textContent = on ? 'Enviando…' : 'Confirmar doação';
   }
 
   /* ── Limpa erros de validação ── */
@@ -1042,7 +1007,7 @@
     const produto = itemsCache.find(i => i.nome === item);
     if (produto && quantidade > produto.restante) {
       const el = document.getElementById('erroQtd');
-      el.textContent = `Máximo disponível: ${produto.restante} ${produto.unidade}.`;
+      el.textContent = `Máximo disponível: ${produto.restante} ${produto.unidade.replace(/\.$/, '')}.`;
       el.classList.add('show');
       return;
     }
@@ -1097,6 +1062,9 @@
   updateSteps();
   carregarItens();
   carregarProgresso();
+</script>
+<script>
+  document.getElementById('ano').textContent = new Date().getFullYear();
 </script>
 </body>
 </html>
